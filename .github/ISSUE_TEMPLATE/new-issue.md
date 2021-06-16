@@ -1,7 +1,7 @@
 ---
-name: New issue
-about: Describe this issue template's purpose here.
-title: "[New issue]"
+name: New story
+about: This is a template used for generating new user stories
+title: "[New story]"
 labels: ''
 assignees: ''
 
@@ -16,5 +16,5 @@ assignees: ''
 *
 
 **Acceptance criteria**
-```
-```
+*
+*
