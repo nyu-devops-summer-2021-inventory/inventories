@@ -53,24 +53,26 @@ Vagrant.configure(2) do |config|
   end
 
   # Install OS packages via apt, configure virtual environment and install Python dependencies
+  # NOTE: If you're debugging, feel free to remove '> /dev/null' from any of the shell commands
+  # it exists simply to make the output a bit less chatty
   config.vm.provision "shell", inline: <<-SHELL
     echo "Installing OS packages for Python environment..."
-    apt-get update
-    apt-get install -y git tree wget vim python3-dev python3-pip python3-venv apt-transport-https
-    apt-get upgrade python3
+    apt-get update > /dev/null
+    apt-get install -y git tree wget vim python3-dev python3-pip python3-venv apt-transport-https > /dev/null
+    apt-get upgrade python3 > /dev/null
     
     echo "Installing PostgreSQL development library for arm64 architectures..."
-    apt-get install -y libpq-dev
+    apt-get install -y libpq-dev > /dev/null
 
     echo "Configuring virtual environment and configuring auto activation in ~/.profile..."
-    sudo -H -u vagrant sh -c 'python3 -m venv ~/venv'
-    sudo -H -u vagrant sh -c 'echo ". ~/venv/bin/activate" >> ~/.profile'
+    sudo -H -u vagrant sh -c 'python3 -m venv ~/venv' > /dev/null
+    sudo -H -u vagrant sh -c 'echo ". ~/venv/bin/activate" >> ~/.profile' > /dev/null
     
     echo "Installing pip and wheel..."
-    sudo -H -u vagrant sh -c '. ~/venv/bin/activate && pip install -U pip && pip install wheel'
+    sudo -H -u vagrant sh -c '. ~/venv/bin/activate && pip install -U pip && pip install wheel' > /dev/null
 
     echo "Installing Python dependencies..."
-    sudo -H -u vagrant sh -c '. ~/venv/bin/activate && cd /vagrant && pip install -r requirements.txt'      
+    sudo -H -u vagrant sh -c '. ~/venv/bin/activate && cd /vagrant && pip install -r requirements.txt' > /dev/null
   SHELL
 
   # Configure PostgreSQL docker container inside of Vagrant environment
@@ -86,7 +88,7 @@ Vagrant.configure(2) do |config|
     echo "Pausing for 60 seconds to allow PostgreSQL to initialize..."
     sleep 60
     echo "Creating test database..."
-    docker exec postgres psql -c "create database testdb;" -U postgres
+    docker exec postgres psql -c "create database testdb;" -U postgres > /dev/null
   SHELL
 
 end
