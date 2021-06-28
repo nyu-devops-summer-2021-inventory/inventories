@@ -53,7 +53,7 @@ class InventoryItem(db.Model):
         server_default=(Condition.New.name),
     )
     restock_level = db.Column(db.Integer, nullable=False)
-    restock_amount =  db.Column(db.Integer, nullable=False)
+    restock_amount = db.Column(db.Integer, nullable=False)
 
     def __repr__(self):
         return f"<Inventory item {self.sku} id={self.id}>"
