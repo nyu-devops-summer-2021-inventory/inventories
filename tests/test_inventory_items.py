@@ -139,14 +139,14 @@ class TestInventoryItemModel(unittest.TestCase):
         # Construct an empty InventoryItem
         item = InventoryItem()
 
-        # Use the assertRaises as a context manager:
+        # Use assertRaises as a context manager:
         # https://docs.python.org/3/library/unittest.html#unittest.TestCase.assertRaises  # noqa E503
         with self.assertRaises(DataValidationError):
             item.deserialize(data)
 
     def test_deserialize_bad_data(self):
         """Test deserialization of an InventoryItem with bad data"""
-        data = "this is not a dictionary"
+        data = "I am going to break your Database!!!"
         item = InventoryItem()
 
         with self.assertRaises(DataValidationError):
@@ -155,6 +155,8 @@ class TestInventoryItemModel(unittest.TestCase):
     def test_repr(self):
         """Ensure string representation of an InventoryItem is correct"""
         item = InventoryItem()
+        # Use deserialize so we have control over all of the attributes for 
+        # our assertEqual statement
         item.deserialize(
             {
                 "sku": "FAKE1234",
