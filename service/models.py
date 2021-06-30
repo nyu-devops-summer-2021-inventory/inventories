@@ -54,7 +54,7 @@ class InventoryItem(db.Model):
     )
     restock_level = db.Column(db.Integer, nullable=False)
     restock_amount = db.Column(db.Integer, nullable=False)
-    in_stock = db.Column(db.Boolean(), nullable=False, default=False) # updated June 29
+    in_stock = db.Column(db.Boolean(), nullable=False, default=False)
 
     def __repr__(self):
         return f"<Inventory item {self.sku} id={self.id}>"
@@ -63,7 +63,7 @@ class InventoryItem(db.Model):
         """
         Updates an Inventory item to the database
         """
-        logger.info("Saving %s",self.sku) # TODO: Not sure about the sku part. Might change it later.
+        logger.info("Saving %s", self.sku) # TODO: Not sure about the sku part. Might change it later.
         if not self.id:
             raise DataValidationError("Update called with empty ID field.")
         db.session.commit()
@@ -77,7 +77,7 @@ class InventoryItem(db.Model):
             "condition": self.condition.name,
             "restock_level": self.restock_level,
             "restock_amount": self.restock_amount,
-            "in_stock": self.in_stock, # updated June 29
+            "in_stock": self.in_stock,
         }
 
     def deserialize(self, data: Dict[str, Union[str, int]]):
@@ -88,7 +88,7 @@ class InventoryItem(db.Model):
             self.condition = getattr(Condition, data["condition"])
             self.restock_level = data["restock_level"]
             self.restock_amount = data["restock_amount"]
-            self.in_stock = data["in_stock"] # updated June 29
+            self.in_stock = data["in_stock"]
         except KeyError as error:
             raise DataValidationError(
                 f"Invalid inventory item: missing {error.args[0]}"
@@ -112,13 +112,13 @@ class InventoryItem(db.Model):
 
     @classmethod
     def find(cls, inventory_item_id):
-        """Finds a Pet by it's ID
+        """Finds an inventory item by it's ID
 
-        :param pet_id: the id of the Pet to find
-        :type pet_id: int
+        :param inventory_item_id: the id of the inventory item to find
+        :type inventory_item_id: int
 
-        :return: an instance with the pet_id, or None if not found
-        :rtype: Pet
+        :return: an instance with the inventory_item_id, or None if not found
+        :rtype: InventoryItem
 
         """
         logger.info("Processing lookup for id %s ...", inventory_item_id)

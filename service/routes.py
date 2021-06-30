@@ -26,7 +26,7 @@ from . import app
 ######################################################################
 # UPDATE AN IN_STOCK STATUS
 ######################################################################
-@app.route("/inventories/<int:inventory_item_id>/in-stock", method=["PUT"])
+@app.route("/inventories/<int:inventory_item_id>/in-stock", methods=["PUT"])
 def update_in_stock(inventory_item_id):
 	"""
 	Update in-stock status

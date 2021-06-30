@@ -28,3 +28,4 @@ class InventoryItemFactory(factory.Factory):
     # I.e. make sure our restock amount is some multiple larger than our 
     # restock level
     restock_amount = restock_level * randrange(2, 6)
+    in_stock = FuzzyChoice(choices=[True, False])
