@@ -64,24 +64,24 @@ class TestInventoryItemServer(unittest.TestCase):
 		db.session.remove()
 		db.drop_all()
 
-	# def test_update_in_stock(self):
-	# 	"""Update an existing Pet"""
-	# 	# create a pet to update
-	# 	test_pet = PetFactory()
-	# 	resp = self.app.post(
-	# 	BASE_URL, json=test_pet.serialize(), content_type=CONTENT_TYPE_JSON
-	# 	)
-	# 	self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+	def test_update_in_stock(self):
+		"""Update in stock status for an inventory item"""
+		# TODO: create an inventory to update
+		test_inventory_item = InventoryItemFactory()
+		resp = self.app.post(
+		BASE_URL, json=test_inventory_item.serialize(), content_type=CONTENT_TYPE_JSON
+		)
+		self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
 
-	# 	# update the pet
-	# 	new_pet = resp.get_json()
-	# 	logging.debug(new_pet)
-	# 	new_pet["category"] = "unknown"
-	# 	resp = self.app.put(
-	# 	"/pets/{}".format(new_pet["id"]),
-	# 	json=new_pet,
-	# 	content_type=CONTENT_TYPE_JSON,
-	# 	)
-	# 	self.assertEqual(resp.status_code, status.HTTP_200_OK)
-	# 	updated_pet = resp.get_json()
-	# 	self.assertEqual(updated_pet["category"], "unknown")
+		# update the pet
+		new_inventory_item = resp.get_json()
+		logging.debug(new_inventory_item)
+		new_inventory_item["in_stock"] = False
+		resp = self.app.put(
+		"/inventories/{}/in-stock".format(new_inventory_item["id"]),
+		json=new_inventory_item,
+		content_type=CONTENT_TYPE_JSON,
+		)
+		self.assertEqual(resp.status_code, status.HTTP_200_OK)
+		updated_inventory_item = resp.get_json()
+		self.assertEqual(updated_inventory_item["in_stock"], False)
