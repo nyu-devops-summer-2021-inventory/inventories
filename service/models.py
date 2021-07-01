@@ -59,6 +59,15 @@ class InventoryItem(db.Model):
     def __repr__(self):
         return f"<Inventory item {self.sku} id={self.id}>"
         
+    def create(self):
+        """
+        Creates an Inventory item to the database
+        """
+        logger.info("Creating %s", self.sku)
+        self.id = None  # id must be none to generate next primary key
+        db.session.add(self)
+        db.session.commit()
+
     def update(self):
         """
         Updates an Inventory item to the database

@@ -24,6 +24,28 @@ from service.models import InventoryItem, DataValidationError
 from . import app
 
 ######################################################################
+# ADD A NEW INVENTORY ITEM
+######################################################################
+@app.route("/inventories", methods=["POST"])
+def create_inventory_item():
+	"""
+	Creates an Inventory item
+	This endpoint will create an Inventory item based the data in the body that is posted
+	"""
+	app.logger.info("Request to create an inventory item")
+	check_content_type("application/json")
+	inventory_item = InventoryItem()
+	inventory_item.deserialize(request.get_json())
+	inventory_item.create()
+	message = inventory_item.serialize()
+	location_url = url_for("create_inventory_item", inventory_item_id=inventory_item.id, _external=True)
+
+	app.logger.info("Inventory item with ID [%s] created.", inventory_item.id)
+	return make_response(
+		jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
+	)
+
+######################################################################
 # UPDATE AN IN_STOCK STATUS
 ######################################################################
 @app.route("/inventories/<int:inventory_item_id>/in-stock", methods=["PUT"])

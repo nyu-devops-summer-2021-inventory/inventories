@@ -54,6 +54,11 @@ class TestInventoryItemModel(unittest.TestCase):
         db.session.remove()
         db.drop_all()
 
+    ######################################################################
+    #  T E S T   C A S E S
+    ######################################################################
+
+
     def test_serialize(self):
         """Test serialization of an InventoryItem"""
         item = InventoryItemFactory()
@@ -92,6 +97,13 @@ class TestInventoryItemModel(unittest.TestCase):
         # Same as above, but for in_stock
         self.assertIn("in_stock", data)
         self.assertEqual(data["in_stock"], item.in_stock)
+
+    def test_create_a_inventory_item(self):
+        """Create an inventory item and assert that it exists"""
+        inventory_item = InventoryItem(sku="fido", count=10, condition="New", restock_level=2, restock_amount=20, in_stock=True)
+        self.assertTrue(inventory_item != None)
+        self.assertEqual(inventory_item.id, None)
+        self.assertEqual(inventory_item.sku, "fido")
 
     def test_deserialize(self):
         """Test deserialization of an InventoryItem"""
