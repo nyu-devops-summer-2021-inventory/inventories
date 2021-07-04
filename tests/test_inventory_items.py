@@ -58,7 +58,6 @@ class TestInventoryItemModel(unittest.TestCase):
     #  T E S T   C A S E S
     ######################################################################
 
-
     def test_serialize(self):
         """Test serialization of an InventoryItem"""
         item = InventoryItemFactory()
@@ -100,12 +99,14 @@ class TestInventoryItemModel(unittest.TestCase):
 
     def test_create_a_inventory_item(self):
         """Create an inventory item and assert that it exists"""
-        inventory_item = InventoryItem(sku="fido",
-                                        count=10, 
-                                        condition="New", 
-                                        restock_level=2, 
-                                        restock_amount=20, 
-                                        in_stock=True)
+        inventory_item = InventoryItem(
+            sku="fido",
+            count=10,
+            condition="New",
+            restock_level=2,
+            restock_amount=20,
+            in_stock=True,
+        )
         self.assertTrue(inventory_item != None)
         self.assertEqual(inventory_item.id, None)
         self.assertEqual(inventory_item.sku, "fido")
@@ -118,7 +119,7 @@ class TestInventoryItemModel(unittest.TestCase):
             "condition": "New",
             "restock_level": 2,
             "restock_amount": 20,
-            "in_stock": True
+            "in_stock": True,
         }
 
         # Create a blank slate InventoryItem
@@ -151,12 +152,7 @@ class TestInventoryItemModel(unittest.TestCase):
     def test_deserialize_missing_data(self):
         """Test deserialization of an InventoryItem with missing data"""
         # I.e. we're missing a restock_amount
-        data = {
-            "sku": "FOOBAR12", 
-            "count": 5, 
-            "condition": "Used", 
-            "restock_level": 4
-        }
+        data = {"sku": "FOOBAR12", "count": 5, "condition": "Used", "restock_level": 4}
 
         # Construct an empty InventoryItem
         item = InventoryItem()
@@ -177,7 +173,7 @@ class TestInventoryItemModel(unittest.TestCase):
     def test_repr(self):
         """Ensure string representation of an InventoryItem is correct"""
         item = InventoryItem()
-        # Use deserialize so we have control over all of the attributes for 
+        # Use deserialize so we have control over all of the attributes for
         # our assertEqual statement
         item.deserialize(
             {
@@ -187,7 +183,7 @@ class TestInventoryItemModel(unittest.TestCase):
                 "restock_level": 2,
                 "restock_amount": 20,
                 "in_stock": True,
-            }   
+            }
         )
         expected = "<Inventory item FAKE1234 id=None>"
         self.assertEqual(item.__repr__(), expected)

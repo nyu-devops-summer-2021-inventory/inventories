@@ -48,8 +48,8 @@ class InventoryItem(db.Model):
     sku = db.Column(db.String(63), nullable=False)
     count = db.Column(db.Integer, nullable=False)
     condition = db.Column(
-        db.Enum(Condition), 
-        nullable=False, 
+        db.Enum(Condition),
+        nullable=False,
         server_default=(Condition.New.name),
     )
     restock_level = db.Column(db.Integer, nullable=False)
@@ -58,7 +58,7 @@ class InventoryItem(db.Model):
 
     def __repr__(self):
         return f"<Inventory item {self.sku} id={self.id}>"
-        
+
     def create(self):
         """
         Creates an Inventory item to the database
@@ -72,7 +72,9 @@ class InventoryItem(db.Model):
         """
         Updates an Inventory item to the database
         """
-        logger.info("Saving %s", self.sku) # TODO: Not sure about the sku part. Might change it later.
+        logger.info(
+            "Saving %s", self.sku
+        )  # TODO: Not sure about the sku part. Might change it later.
         if not self.id:
             raise DataValidationError("Update called with empty ID field.")
         db.session.commit()
