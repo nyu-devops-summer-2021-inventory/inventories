@@ -28,13 +28,12 @@ if __name__ != "__main__":
     app.logger.setLevel(gunicorn_logger.level)
     # Make all log formats consistent
     formatter = logging.Formatter(
-        "[%(asctime)s] [%(levelname)s] [%(module)s] %(message)s", 
-        "%Y-%m-%d %H:%M:%S %z"
+        "[%(asctime)s] [%(levelname)s] [%(module)s] %(message)s", "%Y-%m-%d %H:%M:%S %z"
     )
 
     for handler in app.logger.handlers:
         handler.setFormatter(formatter)
-        
+
     app.logger.info("Logging handler established")
 
 app.logger.info(70 * "*")

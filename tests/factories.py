@@ -21,11 +21,9 @@ class InventoryItemFactory(factory.Factory):
     sku = factory.Faker("ean8")
     # I.e. pick a random number between 0 and 50
     count = randrange(0, 51)
-    condition = FuzzyChoice(
-        choices=[Condition.New, Condition.Used, Condition.OpenBox]
-    )
+    condition = FuzzyChoice(choices=[Condition.New, Condition.Used, Condition.OpenBox])
     restock_level = randrange(5, 21)
-    # I.e. make sure our restock amount is some multiple larger than our 
+    # I.e. make sure our restock amount is some multiple larger than our
     # restock level
     restock_amount = restock_level * randrange(2, 6)
     in_stock = FuzzyChoice(choices=[True, False])
