@@ -11,7 +11,7 @@ from enum import Enum
 import logging
 from typing import Dict, Union
 
-from flask import app, Flask
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
 logger = logging.getLogger("flask.app")

@@ -100,7 +100,12 @@ class TestInventoryItemModel(unittest.TestCase):
 
     def test_create_a_inventory_item(self):
         """Create an inventory item and assert that it exists"""
-        inventory_item = InventoryItem(sku="fido", count=10, condition="New", restock_level=2, restock_amount=20, in_stock=True)
+        inventory_item = InventoryItem(sku="fido",
+                                        count=10, 
+                                        condition="New", 
+                                        restock_level=2, 
+                                        restock_amount=20, 
+                                        in_stock=True)
         self.assertTrue(inventory_item != None)
         self.assertEqual(inventory_item.id, None)
         self.assertEqual(inventory_item.sku, "fido")

@@ -38,7 +38,9 @@ def create_inventory_item():
 	inventory_item.deserialize(request.get_json())
 	inventory_item.create()
 	message = inventory_item.serialize()
-	location_url = url_for("create_inventory_item", inventory_item_id=inventory_item.id, _external=True)
+	location_url = url_for("create_inventory_item",
+							inventory_item_id=inventory_item.id,
+							_external=True)
 
 	app.logger.info("Inventory item with ID [%s] created.", inventory_item.id)
 	return make_response(
