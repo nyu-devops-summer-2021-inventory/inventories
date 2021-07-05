@@ -14,10 +14,10 @@ import os
 import logging
 import unittest
 
-# from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 from urllib.parse import quote_plus
 from service import status  # HTTP Status Codes
-from service.models import db, init_db
+from service.models import db, init_db, DataValidationError
 from service.routes import app
 from .factories import InventoryItemFactory
 
@@ -153,3 +153,41 @@ class TestInventoryItemServer(unittest.TestCase):
         self.assertEqual(len(resp.data), 0)
 
         # TODO: Once the query endpoint is ready, verify that the pet is actually gone
+
+    @patch("service.routes.InventoryItem.create")
+    def test_create_bad_request(self, bad_request_mock):
+        """Ensure a 400 is returned if the request data is bad"""
+        bad_request_mock.side_effect = DataValidationError()
+        test_inventory_item = InventoryItemFactory()
+        resp = self.app.post(
+            BASE_URL,
+            json=test_inventory_item.serialize(),
+            content_type=CONTENT_TYPE_JSON,
+        )
+        self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_delete_unknown_item(self):
+        """Ensure a 404 is returned if a DELETE is sent for a nonexistant item"""
+        resp = self.app.delete(
+            "{0}/{1}".format(BASE_URL, "fake_id"),
+            content_type=CONTENT_TYPE_JSON,
+        )
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_method_not_allowed_index(self):
+        """Ensure a 405 is returned if a non-GET request is sent to /"""
+        resp = self.app.delete(
+            "{0}/{1}".format("/", "fake_id"),
+            content_type=CONTENT_TYPE_JSON,
+        )
+        self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_unsupported_media_type(self):
+        """Ensure a 415 is raised if an unsupported media type is used"""
+        test_inventory_item = InventoryItemFactory()
+        resp = self.app.post(
+            BASE_URL,
+            json=test_inventory_item.serialize(),
+            content_type="bad_media_type",
+        )
+        self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
