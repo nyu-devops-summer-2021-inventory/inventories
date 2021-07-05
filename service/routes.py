@@ -5,6 +5,7 @@ Inventory Service
 Paths:
 ------
 TODO: Add your assigned actions here
+GET / - return some useful information about the service
 PUT /inventories/{ID}/in-stock - update the in_stock attribute of Inventory model to True
 PUT /inventories/{ID}/out-of-stock - update the in_stock attribute of Inventory model to False
 """
@@ -22,6 +23,21 @@ from service.models import InventoryItem, DataValidationError
 
 # Import Flask application
 from . import app
+
+######################################################################
+# GET INDEX
+######################################################################
+@app.route("/")
+def index():
+    """
+    Return some useful information about the service, including 
+    service name, version, and the resource URL
+    """
+    url = request.base_url + 'inventories'
+    # url=url_for('list_items', _external=True)
+    return jsonify(name='Inventory Service', version='1.0', url=url), status.HTTP_200_OK
+
+
 
 ######################################################################
 # ADD A NEW INVENTORY ITEM

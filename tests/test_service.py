@@ -63,6 +63,16 @@ class TestInventoryItemServer(unittest.TestCase):
     def tearDown(self):
         db.session.remove()
         db.drop_all()
+    
+    def test_index(self):
+        """
+        Test the index page
+        Return some useful information when root url is requested
+        """
+        resp = self.app.get('/')
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(data['name'], 'Inventory Service')
 
     def test_create_inventory_item(self):
         """Create a new Inventory item"""
