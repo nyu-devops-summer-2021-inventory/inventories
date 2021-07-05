@@ -28,8 +28,6 @@ def init_db(app):
 class DataValidationError(Exception):
     """Used for an data validation errors when deserializing"""
 
-    pass
-
 
 class Condition(Enum):
     """Enumeration of valid Item conditions"""
@@ -66,6 +64,12 @@ class InventoryItem(db.Model):
         logger.info("Creating %s", self.sku)
         self.id = None  # id must be none to generate next primary key
         db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        """Removes a Inventory item from the database"""
+        logger.info("Deleting %s", self.sku)
+        db.session.delete(self)
         db.session.commit()
 
     def update(self):
@@ -134,3 +138,9 @@ class InventoryItem(db.Model):
         """
         logger.info("Processing lookup for id %s ...", inventory_item_id)
         return cls.query.get(inventory_item_id)
+
+    @classmethod
+    def all(cls):
+        """Returns all of the InventoryItems in the database"""
+        logger.info("Returning a list of all inventory items...")
+        return cls.query.all()
