@@ -9,17 +9,11 @@ GET / - return some useful information about the service
 PUT /inventories/{ID}/in-stock - update the in_stock attribute of Inventory model to True
 PUT /inventories/{ID}/out-of-stock - update the in_stock attribute of Inventory model to False
 """
-import os
-import sys
-import logging
-from flask import Flask, jsonify, request, url_for, make_response, abort
-from . import status  # HTTP Status Codes
+from flask import jsonify, request, url_for, make_response, abort
 from werkzeug.exceptions import NotFound
 
-# For this example we'll use SQLAlchemy, a popular ORM that supports a
-# variety of backends including SQLite, MySQL, and PostgreSQL
-from flask_sqlalchemy import SQLAlchemy
-from service.models import InventoryItem, DataValidationError
+from service.models import InventoryItem
+from . import status  # HTTP Status Codes
 
 # Import Flask application
 from . import app
@@ -33,10 +27,9 @@ def index():
     Return some useful information about the service, including
     service name, version, and the resource URL
     """
-    url = request.base_url + 'inventories'
+    url = request.base_url + "inventories"
     # url=url_for('list_items', _external=True)
-    return jsonify(name='Inventory Service', version='1.0', url=url), status.HTTP_200_OK
-
+    return jsonify(name="Inventory Service", version="1.0", url=url), status.HTTP_200_OK
 
 
 ######################################################################
@@ -87,12 +80,25 @@ def update_in_stock(inventory_item_id):
     return make_response(jsonify(inventory_item.serialize()), status.HTTP_200_OK)
 
 
+@app.route("/inventories/<int:inventory_item_id>", methods=["DELETE"])
+def delete_inventory_items(inventory_item_id):
+    """
+    Delete an inventory item
+
+    This endpoint will delete a InventoryItem based the id specified in the path
+    """
+    app.logger.info("Request to delete inventory item with id: %s", inventory_item_id)
+    inventory_item_id = InventoryItem.find(inventory_item_id)
+    if inventory_item_id:
+        inventory_item_id.delete()
+
+    app.logger.info("Finished deleting inventory item [%s]", inventory_item_id)
+    return make_response("", status.HTTP_204_NO_CONTENT)
+
+
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################
-"""
-This method is copied straight out of the lab. Please modify if needed.
-"""
 
 
 def check_content_type(media_type):

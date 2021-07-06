@@ -14,10 +14,10 @@ import os
 import logging
 import unittest
 
-# from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 from urllib.parse import quote_plus
 from service import status  # HTTP Status Codes
-from service.models import db, init_db
+from service.models import db, init_db, DataValidationError
 from service.routes import app
 from .factories import InventoryItemFactory
 
@@ -63,16 +63,36 @@ class TestInventoryItemServer(unittest.TestCase):
     def tearDown(self):
         db.session.remove()
         db.drop_all()
-    
+
+    def _create_inventory_items(self, count: int):
+        """Factory method to create inventory items in bulk"""
+        inventory_items = []
+        for _ in range(count):
+            test_inventory_item = InventoryItemFactory()
+            resp = self.app.post(
+                BASE_URL,
+                json=test_inventory_item.serialize(),
+                content_type=CONTENT_TYPE_JSON,
+            )
+            self.assertEqual(
+                resp.status_code,
+                status.HTTP_201_CREATED,
+                "Could not create test inventory item",
+            )
+            new_inventory_item = resp.get_json()
+            test_inventory_item.id = new_inventory_item["id"]
+            inventory_items.append(test_inventory_item)
+        return inventory_items
+
     def test_index(self):
         """
         Test the index page
         Return some useful information when root url is requested
         """
-        resp = self.app.get('/')
+        resp = self.app.get("/")
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
-        self.assertEqual(data['name'], 'Inventory Service')
+        self.assertEqual(data["name"], "Inventory Service")
 
     def test_create_inventory_item(self):
         """Create a new Inventory item"""
@@ -104,7 +124,7 @@ class TestInventoryItemServer(unittest.TestCase):
         )
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
 
-        # update the pet
+        # update the inventory item
         new_inventory_item = resp.get_json()
         logging.debug(new_inventory_item)
         new_inventory_item["in_stock"] = False
@@ -116,3 +136,58 @@ class TestInventoryItemServer(unittest.TestCase):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         updated_inventory_item = resp.get_json()
         self.assertEqual(updated_inventory_item["in_stock"], False)
+
+    def test_delete_inventory_item(self):
+        """Delete an inventory item"""
+        # Create a dummy inventory item
+        test_inventory_item = self._create_inventory_items(1)[0]
+
+        # Send a request to delete the dummy item
+        resp = self.app.delete(
+            "{0}/{1}".format(BASE_URL, test_inventory_item.id),
+            content_type=CONTENT_TYPE_JSON,
+        )
+
+        # Ensure the response code is 204 and contains no data
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(len(resp.data), 0)
+
+        # TODO: Once the query endpoint is ready, verify that the pet is actually gone
+
+    @patch("service.routes.InventoryItem.create")
+    def test_create_bad_request(self, bad_request_mock):
+        """Ensure a 400 is returned if the request data is bad"""
+        bad_request_mock.side_effect = DataValidationError()
+        test_inventory_item = InventoryItemFactory()
+        resp = self.app.post(
+            BASE_URL,
+            json=test_inventory_item.serialize(),
+            content_type=CONTENT_TYPE_JSON,
+        )
+        self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_delete_unknown_item(self):
+        """Ensure a 404 is returned if a DELETE is sent for a nonexistant item"""
+        resp = self.app.delete(
+            "{0}/{1}".format(BASE_URL, "fake_id"),
+            content_type=CONTENT_TYPE_JSON,
+        )
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_method_not_allowed_index(self):
+        """Ensure a 405 is returned if a non-GET request is sent to /"""
+        resp = self.app.delete(
+            "{0}/{1}".format("/", "fake_id"),
+            content_type=CONTENT_TYPE_JSON,
+        )
+        self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_unsupported_media_type(self):
+        """Ensure a 415 is raised if an unsupported media type is used"""
+        test_inventory_item = InventoryItemFactory()
+        resp = self.app.post(
+            BASE_URL,
+            json=test_inventory_item.serialize(),
+            content_type="bad_media_type",
+        )
+        self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)

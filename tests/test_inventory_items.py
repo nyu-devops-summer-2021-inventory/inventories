@@ -97,20 +97,6 @@ class TestInventoryItemModel(unittest.TestCase):
         self.assertIn("in_stock", data)
         self.assertEqual(data["in_stock"], item.in_stock)
 
-    def test_create_a_inventory_item(self):
-        """Create an inventory item and assert that it exists"""
-        inventory_item = InventoryItem(
-            sku="fido",
-            count=10,
-            condition="New",
-            restock_level=2,
-            restock_amount=20,
-            in_stock=True,
-        )
-        self.assertTrue(inventory_item != None)
-        self.assertEqual(inventory_item.id, None)
-        self.assertEqual(inventory_item.sku, "fido")
-
     def test_deserialize(self):
         """Test deserialization of an InventoryItem"""
         data = {
@@ -187,3 +173,32 @@ class TestInventoryItemModel(unittest.TestCase):
         )
         expected = "<Inventory item FAKE1234 id=None>"
         self.assertEqual(item.__repr__(), expected)
+
+    def test_create(self):
+        """Create an inventory item and assert that it exists"""
+        inventory_item = InventoryItem(
+            sku="FAKESKU123",
+            count=10,
+            condition="New",
+            restock_level=2,
+            restock_amount=20,
+            in_stock=True,
+        )
+        self.assertTrue(inventory_item != None)
+        self.assertEqual(inventory_item.id, None)
+        self.assertEqual(inventory_item.sku, "FAKESKU123")
+        self.assertEqual(inventory_item.condition, Condition.New.name)
+        self.assertEqual(inventory_item.restock_amount, 20)
+        self.assertEqual(inventory_item.in_stock, True)
+
+    def test_delete(self):
+        """Ensure InventoryItem.delete() behaves as expected"""
+        inventory_item = InventoryItemFactory()
+        inventory_item.create()
+
+        # Verify that we have exactly one inventory item first
+        self.assertEqual(len(InventoryItem.all()), 1)
+
+        # Then delete the inventory item, and ensure it's no longer in the database
+        inventory_item.delete()
+        self.assertEqual(len(InventoryItem.all()), 0)
