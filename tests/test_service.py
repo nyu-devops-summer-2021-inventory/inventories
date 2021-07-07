@@ -94,6 +94,17 @@ class TestInventoryItemServer(unittest.TestCase):
         data = resp.get_json()
         self.assertEqual(data["name"], "Inventory Service")
 
+    def test_get_inventory_item(self):
+        """Get an Inventory item"""
+        test_inventory_item = self._create_inventory_items(1)[0]
+        resp = self.app.get(
+            "{}/{}".format(BASE_URL, test_inventory_item.id),
+            content_type=CONTENT_TYPE_JSON,
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(data["id"],test_inventory_item.id)
+        
     def test_get_inventory_list(self):
         """Get a list of Inventory items"""
         self._create_inventory_items(5)
