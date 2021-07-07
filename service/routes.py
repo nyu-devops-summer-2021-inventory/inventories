@@ -55,6 +55,20 @@ def update_inventory_items(inventory_item_id):
     inventory_item.update()
     app.logger.info("Inventory item with id [%s] was updated successfully.", inventory_item.id)
     return make_response(jsonify(inventory_item.serialize()), status.HTTP_200_OK)
+    
+######################################################################
+# LIST ALL Inventory Items
+######################################################################
+@app.route("/inventories", methods=["GET"])
+def list_inventories():
+    """Returns all of the InventoryItem objects"""
+    app.logger.info("Request for inventory list")
+    inventories = []
+    inventories = InventoryItem.all()
+
+    results = [item.serialize() for item in inventories]
+    app.logger.info("Returning %d inventory items", len(results))
+    return make_response(jsonify(results), status.HTTP_200_OK)
 
 ######################################################################
 # ADD A NEW INVENTORY ITEM
