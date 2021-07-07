@@ -36,6 +36,23 @@ def index():
 
 
 ######################################################################
+# RETRIEVE AN INVENTORY ITEM
+######################################################################
+@app.route("/inventories/<int:inventory_item_id>", methods=["GET"])
+def get_inventory_items(inventory_item_id):
+    """
+    Retrieve an inventory item
+
+    This endpoint will return a inventory item based on the id specified in the path
+    """
+    app.logger.info("Request to Update a inventory item with id [%s]", inventory_item_id)
+    inventory_item = InventoryItem.find(inventory_item_id)
+    if not inventory_item:
+        raise NotFound("Inventory item with id '{}' was not found.".format(inventory_item_id))
+    return make_response(jsonify(inventory_item.serialize()), status.HTTP_200_OK)
+
+
+######################################################################
 # UPDATE AN EXISTING INVENTORY ITEM
 ######################################################################
 @app.route("/inventories/<int:inventory_item_id>", methods=["PUT"])
