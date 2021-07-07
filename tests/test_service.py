@@ -121,6 +121,83 @@ class TestInventoryItemServer(unittest.TestCase):
             new_inventory_item["sku"], test_inventory_item.sku, "Names do not match"
         )
 
+    def test_update_inventory_item(self):
+        """Update an Inventory item"""
+        # Create a dummy inventory item
+        test_inventory_item = self._create_inventory_items(1)[0]
+        # make the call
+        resp = self.app.put(
+            "{}/{}".format(BASE_URL, test_inventory_item.id),
+            json=test_inventory_item.serialize(),
+            content_type=CONTENT_TYPE_JSON,
+        )
+
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        # go back and get it again, need query function
+        # TODO: uncomment the codes below after query function is finished
+        # resp = self.app.get(
+        #     '{}/{}'.format(BASE_URL, test_inventory_item.id),
+        #     content_type=CONTENT_TYPE_JSON)
+        # self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        updated_inventory_item = resp.get_json()
+        logging.debug("data = %s", updated_inventory_item)
+        self.assertEqual(
+            updated_inventory_item["id"], test_inventory_item.id, "ids do not match"
+        )
+        self.assertEqual(
+            updated_inventory_item["sku"], test_inventory_item.sku, "names do not match"
+        )
+        self.assertEqual(
+            updated_inventory_item["count"],
+            test_inventory_item.count,
+            "counts do not match",
+        )
+        self.assertEqual(
+            updated_inventory_item["condition"],
+            test_inventory_item.condition.name,
+            "condations do not match",
+        )
+        self.assertEqual(
+            updated_inventory_item["restock_level"],
+            test_inventory_item.restock_level,
+            "restock_levels do not match",
+        )
+        self.assertEqual(
+            updated_inventory_item["restock_amount"],
+            test_inventory_item.restock_amount,
+            "restock_amounts do not match",
+        )
+        self.assertEqual(
+            updated_inventory_item["in_stock"],
+            test_inventory_item.in_stock,
+            "in_stocks do not match",
+        )
+
+    def test_update_item_with_no_name(self):
+        """Update a item without assigning a name"""
+        # Create a dummy inventory item
+        test_inventory_item = self._create_inventory_items(1)[0].serialize()
+        del test_inventory_item["sku"]
+        # make the call
+        resp = self.app.put(
+            "{}/{}".format(BASE_URL, test_inventory_item["id"]),
+            json=test_inventory_item,
+            content_type=CONTENT_TYPE_JSON,
+        )
+        self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_update_item_not_found(self):
+        """Update an Inventory item that doesn't exist"""
+        # Create a dummy inventory item
+        test_inventory_item = self._create_inventory_items(1)[0]
+        # make the call
+        resp = self.app.put(
+            "{}/{}".format(BASE_URL, test_inventory_item.id - 111111111),
+            json=test_inventory_item.serialize(),
+            content_type=CONTENT_TYPE_JSON,
+        )
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
     def test_update_in_stock(self):
         """Update in stock status for an inventory item"""
         # TODO: create an inventory to update
