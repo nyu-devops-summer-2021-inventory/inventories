@@ -145,14 +145,26 @@ class TestInventoryItemServer(unittest.TestCase):
             updated_inventory_item["condition"], test_inventory_item.condition.name, "condations do not match"
         )
         self.assertEqual(
-            updated_inventory_item["restock_level"], test_inventory_item.restock_level, "counts do not match"
+            updated_inventory_item["restock_level"], test_inventory_item.restock_level, "restock_levels do not match"
         )
         self.assertEqual(
-            updated_inventory_item["restock_amount"], test_inventory_item.restock_amount, "condations do not match"
+            updated_inventory_item["restock_amount"], test_inventory_item.restock_amount, "restock_amounts do not match"
         )
         self.assertEqual(
-            updated_inventory_item["in_stock"], test_inventory_item.in_stock, "counts do not match"
+            updated_inventory_item["in_stock"], test_inventory_item.in_stock, "in_stocks do not match"
         )
+    
+    def test_update_item_with_no_name(self):
+        """ Update a item without assigning a name """
+        # Create a dummy inventory item
+        test_inventory_item = self._create_inventory_items(1)[0].serialize()
+        del test_inventory_item['sku']
+        # make the call
+        resp = self.app.put(
+            '{}/{}'.format(BASE_URL, test_inventory_item['id']), 
+            json=test_inventory_item, 
+            content_type=CONTENT_TYPE_JSON)
+        self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
     
     def test_update_item_not_found(self):
         """ Update an Inventory item that doesn't exist """
