@@ -31,6 +31,19 @@ def index():
     # url=url_for('list_items', _external=True)
     return jsonify(name="Inventory Service", version="1.0", url=url), status.HTTP_200_OK
 
+######################################################################
+# LIST ALL Inventory Items
+######################################################################
+@app.route("/inventories", methods=["GET"])
+def list_inventories():
+    """Returns all of the InventoryItem objects"""
+    app.logger.info("Request for inventory list")
+    inventories = []
+    inventories = InventoryItem.all()
+
+    results = [item.serialize() for item in inventories]
+    app.logger.info("Returning %d inventory items", len(results))
+    return make_response(jsonify(results), status.HTTP_200_OK)
 
 ######################################################################
 # ADD A NEW INVENTORY ITEM
