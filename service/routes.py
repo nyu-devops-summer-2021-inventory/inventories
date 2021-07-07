@@ -31,6 +31,28 @@ def index():
     # url=url_for('list_items', _external=True)
     return jsonify(name="Inventory Service", version="1.0", url=url), status.HTTP_200_OK
 
+######################################################################
+# UPDATE AN EXISTING INVENTORY ITEM
+######################################################################
+@app.route('/inventories/<int:inventory_item_id>', methods=['PUT'])
+def update_inventory_items(inventory_item_id):
+    """
+    Update a inventory item
+    This endpoint will update a InventoryItem based the id specified in the path
+    """
+    app.logger.info('Request to Update a inventory item with id [%s]', inventory_item_id)
+    check_content_type('application/json')
+    inventory_item = InventoryItem.find(inventory_item_id)
+    if not inventory_item:
+        raise NotFound("Inventory item with id '{}' was not found.".format(inventory_item_id))
+    
+    data = request.get_json()
+    app.logger.info(data)
+    inventory_item.deserialize(data)
+    inventory_item.id = inventory_item_id
+    inventory_item.update()
+    app.logger.info("Inventory item with id [%s] was updated successfully.", inventory_item.id)
+    return make_response(jsonify(inventory_item.serialize()), status.HTTP_200_OK)
 
 ######################################################################
 # ADD A NEW INVENTORY ITEM
@@ -79,7 +101,9 @@ def update_in_stock(inventory_item_id):
     app.logger.info("Inventory item with ID [%s] updated.", inventory_item.id)
     return make_response(jsonify(inventory_item.serialize()), status.HTTP_200_OK)
 
-
+######################################################################
+# DELETE AN INVENTORY ITEM
+######################################################################
 @app.route("/inventories/<int:inventory_item_id>", methods=["DELETE"])
 def delete_inventory_items(inventory_item_id):
     """
