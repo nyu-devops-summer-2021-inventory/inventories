@@ -107,3 +107,4 @@ $ vagrant destroy
 - **DELETE /inventories/\<item-id>** - deletes a inventory record in the database
 - **GET /inventories/<item-id>/out-of-stock** - Given the id number, return if the inventory is out of stock
 - **GET /inventories/<item-id>/in-stock** - Given the id number, return if the inventory is in stock
+  
