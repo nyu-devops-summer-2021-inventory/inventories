@@ -31,6 +31,21 @@ def index():
     # url=url_for('list_items', _external=True)
     return jsonify(name="Inventory Service", version="1.0", url=url), status.HTTP_200_OK
 
+######################################################################
+# RETRIEVE AN INVENTORY ITEM
+######################################################################
+@app.route("/inventories/<int:inventory_item_id>", methods=["GET"])
+def get_inventory_item(inventory_item_id):
+    """
+    Retrieve an inventory item
+
+    This endpoint will return a inventory item based on the id specified in the path
+    """
+    app.logger.info("Request for inventory item with id: %s", inventory_item_id)
+    inventory_item = InventoryItem.find(inventory_item_id)
+    #if not inventory_item:
+        #raise NotFound(status.HTTP_404_NOT_FOUND,"Inventory item with id '{}' was not found.".format(inventory_item_id))
+    return make_response(jsonify(inventory_item.serialize()), status.HTTP_200_OK)
 
 ######################################################################
 # ADD A NEW INVENTORY ITEM
