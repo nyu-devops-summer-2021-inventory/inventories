@@ -6,8 +6,10 @@ Paths:
 ------
 TODO: Add your assigned actions here
 GET / - return some useful information about the service
+PUT /inventories/{id} - updates an inventory item record in the database
 PUT /inventories/{ID}/in-stock - update the in_stock attribute of Inventory model to True
 PUT /inventories/{ID}/out-of-stock - update the in_stock attribute of Inventory model to False
+DELETE /inventories/{id} - deletes an inventory item record in the database
 """
 from flask import jsonify, request, url_for, make_response, abort
 from werkzeug.exceptions import NotFound
@@ -37,7 +39,7 @@ def index():
 @app.route('/inventories/<int:inventory_item_id>', methods=['PUT'])
 def update_inventory_items(inventory_item_id):
     """
-    Update a inventory item
+    Update an inventory item
     This endpoint will update a InventoryItem based the id specified in the path
     """
     app.logger.info('Request to Update a inventory item with id [%s]', inventory_item_id)
