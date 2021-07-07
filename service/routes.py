@@ -32,7 +32,7 @@ def index():
     return jsonify(name="Inventory Service", version="1.0", url=url), status.HTTP_200_OK
 
 ######################################################################
-# LIST ALL PETS
+# LIST ALL Inventory Items
 ######################################################################
 @app.route("/inventories", methods=["GET"])
 def list_inventories():
