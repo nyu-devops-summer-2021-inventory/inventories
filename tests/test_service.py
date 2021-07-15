@@ -103,8 +103,8 @@ class TestInventoryItemServer(unittest.TestCase):
         )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
-        self.assertEqual(data["id"],test_inventory_item.id)
-        
+        self.assertEqual(data["id"], test_inventory_item.id)
+
     def test_get_inventory_list(self):
         """Get a list of Inventory items"""
         self._create_inventory_items(5)
@@ -287,3 +287,51 @@ class TestInventoryItemServer(unittest.TestCase):
             content_type="bad_media_type",
         )
         self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+
+    def test_find_inventory_items_by_sku(self):
+        """Query Inventory Items by SKU"""
+        inventory_items = self._create_inventory_items(10)
+        test_sku = inventory_items[0].sku
+        sku_items = [item for item in inventory_items if item.sku == test_sku]
+        resp = self.app.get(
+            BASE_URL, query_string="sku={}".format(quote_plus(test_sku))
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), len(sku_items))
+        # check the data just to be sure
+        for item in data:
+            self.assertEqual(item["sku"], test_sku)
+
+    def test_find_inventory_items_by_condition(self):
+        """Query Inventory Items by condition"""
+        inventory_items = self._create_inventory_items(10)
+        test_condition = inventory_items[0].condition
+        condition_items = [
+            item for item in inventory_items if item.condition == test_condition
+        ]
+        resp = self.app.get(
+            BASE_URL,
+            query_string="condition={}".format(quote_plus(test_condition.name)),
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), len(condition_items))
+        # check the data just to be sure
+        for item in data:
+            self.assertEqual(item["condition"], test_condition.name)
+
+    def test_find_inventory_items_by_in_stock(self):
+        """Query Inventory Items by condition"""
+        inventory_items = self._create_inventory_items(10)
+        test_in_stock = inventory_items[0].in_stock
+        in_stock_items = [
+            item for item in inventory_items if item.in_stock == test_in_stock
+        ]
+        resp = self.app.get(BASE_URL, query_string="in-stock={}".format(test_in_stock))
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), len(in_stock_items))
+        # check the data just to be sure
+        for item in data:
+            self.assertEqual(item["in_stock"], test_in_stock)

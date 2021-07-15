@@ -144,3 +144,21 @@ class InventoryItem(db.Model):
         """Returns all of the InventoryItems in the database"""
         logger.info("Returning a list of all inventory items...")
         return cls.query.all()
+
+    @classmethod
+    def find_by_sku(cls, sku: str):
+        """Return all InventoryItems with a given SKU"""
+        logger.info("Returning a list of all inventory items with sku %s", sku)
+        return cls.query.filter(cls.sku == sku)
+
+    @classmethod
+    def find_by_condition(cls, condition: Condition):
+        """Return all InventoryItems with a given condition"""
+        logger.info("Returning all inventory items with condition %s", condition)
+        return cls.query.filter(cls.condition == condition)
+
+    @classmethod
+    def find_by_in_stock(cls, in_stock: bool):
+        """Return all InventoryItems by in_stock status"""
+        logger.info("Returning all inventory items with in_stock = %s", in_stock)
+        return cls.query.filter(cls.in_stock == in_stock)

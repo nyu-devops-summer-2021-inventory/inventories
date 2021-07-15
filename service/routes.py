@@ -15,7 +15,7 @@ DELETE /inventories/{id} - deletes an inventory item record in the database
 from flask import jsonify, request, url_for, make_response, abort
 from werkzeug.exceptions import NotFound
 
-from service.models import InventoryItem
+from service.models import InventoryItem, Condition
 from . import status  # HTTP Status Codes
 
 # Import Flask application
@@ -45,10 +45,14 @@ def get_inventory_items(inventory_item_id):
 
     This endpoint will return a inventory item based on the id specified in the path
     """
-    app.logger.info("Request to Update a inventory item with id [%s]", inventory_item_id)
+    app.logger.info(
+        "Request to Update a inventory item with id [%s]", inventory_item_id
+    )
     inventory_item = InventoryItem.find(inventory_item_id)
     if not inventory_item:
-        raise NotFound("Inventory item with id '{}' was not found.".format(inventory_item_id))
+        raise NotFound(
+            "Inventory item with id '{}' was not found.".format(inventory_item_id)
+        )
     return make_response(jsonify(inventory_item.serialize()), status.HTTP_200_OK)
 
 
@@ -89,10 +93,27 @@ def update_inventory_items(inventory_item_id):
 def list_inventories():
     """Returns all of the InventoryItem objects"""
     app.logger.info("Request for inventory list")
-    inventories = []
-    inventories = InventoryItem.all()
+    inventory_items = []
 
-    results = [item.serialize() for item in inventories]
+    # If a user provides a SKU query parameter, filter by that
+    sku = request.args.get("sku")
+
+    # If a user provides a condition parameter, filter by that
+    condition = request.args.get("condition")
+
+    # If a user provies an in-stock paramter, filter by that
+    in_stock = request.args.get("in-stock")
+
+    if sku:
+        inventory_items = InventoryItem.find_by_sku(sku)
+    elif condition:
+        inventory_items = InventoryItem.find_by_condition(getattr(Condition, condition))
+    elif in_stock:
+        inventory_items = InventoryItem.find_by_in_stock(in_stock)
+    else:
+        inventory_items = InventoryItem.all()
+
+    results = [item.serialize() for item in inventory_items]
     app.logger.info("Returning %d inventory items", len(results))
     return make_response(jsonify(results), status.HTTP_200_OK)
 

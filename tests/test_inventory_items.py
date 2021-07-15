@@ -202,3 +202,78 @@ class TestInventoryItemModel(unittest.TestCase):
         # Then delete the inventory item, and ensure it's no longer in the database
         inventory_item.delete()
         self.assertEqual(len(InventoryItem.all()), 0)
+
+    def test_find_by_sku(self):
+        """Ensure find_by_sku returns only items with a given sku"""
+        InventoryItem(
+            sku="foo",
+            count=1,
+            condition=Condition.New,
+            restock_level=1,
+            restock_amount=2,
+            in_stock=True,
+        ).create()
+        InventoryItem(
+            sku="bar",
+            count=1,
+            condition=Condition.OpenBox,
+            restock_level=1,
+            restock_amount=2,
+            in_stock=False,
+        ).create()
+        items = InventoryItem.find_by_sku("foo")
+        self.assertEqual(items[0].sku, "foo")
+        self.assertEqual(items[0].count, 1)
+        self.assertEqual(items[0].condition, Condition.New)
+        self.assertEqual(items[0].restock_level, 1)
+        self.assertEqual(items[0].restock_amount, 2)
+
+    def test_find_by_condition(self):
+        """Ensure find_by_condition returns only items with a given condition"""
+        InventoryItem(
+            sku="foo",
+            count=1,
+            condition=Condition.New,
+            restock_level=2,
+            restock_amount=3,
+            in_stock=True,
+        ).create()
+        InventoryItem(
+            sku="bar",
+            count=4,
+            condition=Condition.OpenBox,
+            restock_level=5,
+            restock_amount=6,
+            in_stock=False,
+        ).create()
+        items = InventoryItem.find_by_condition(Condition.OpenBox)
+        self.assertEqual(items[0].sku, "bar")
+        self.assertEqual(items[0].count, 4)
+        self.assertEqual(items[0].condition, Condition.OpenBox)
+        self.assertEqual(items[0].restock_level, 5)
+        self.assertEqual(items[0].restock_amount, 6)
+
+    def test_find_by_in_stock(self):
+        """Ensure find_by_in_stock returns a properly filtered list of inventory items"""
+        InventoryItem(
+            sku="foo",
+            count=1,
+            condition=Condition.New,
+            restock_level=1,
+            restock_amount=2,
+            in_stock=True,
+        ).create()
+        InventoryItem(
+            sku="bar",
+            count=1,
+            condition=Condition.OpenBox,
+            restock_level=1,
+            restock_amount=2,
+            in_stock=False,
+        ).create()
+        items = InventoryItem.find_by_in_stock(True)
+        self.assertEqual(items[0].sku, "foo")
+        self.assertEqual(items[0].count, 1)
+        self.assertEqual(items[0].condition, Condition.New)
+        self.assertEqual(items[0].restock_level, 1)
+        self.assertEqual(items[0].restock_amount, 2)
