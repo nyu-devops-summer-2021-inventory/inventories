@@ -1,8 +1,7 @@
 # Inventory
 
-[![Build Status](https://travis-ci.org/nyu-devops-summer-2021-inventory/inventories.svg?branch=master)](https://travis-ci.org/nyu-devops-summer-2021-inventory/inventories)
-[![Codecov](https://codecov.io/gh/nyu-devops-summer-2021-inventory/inventories/branch/master/graph/badge.svg)](https://codecov.io/gh/nyu-devops-summer-2021-inventory/inventories/branch/master/graph/badge.svg)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Build Status](https://travis-ci.com/nyu-devops-summer-2021-inventory/inventories.svg?branch=main)](https://travis-ci.com/nyu-devops-summer-2021-inventory/inventories)
+[![codecov](https://codecov.io/gh/nyu-devops-summer-2021-inventory/inventories/branch/main/graph/badge.svg?token=OYHN2YOLX4)](https://codecov.io/gh/nyu-devops-summer-2021-inventory/inventories)
 
 The inventory resource keeps track of how many of each product we have in our warehouse.
 
