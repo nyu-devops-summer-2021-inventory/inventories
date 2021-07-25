@@ -6,21 +6,28 @@ $(function () {
 
     // Updates the form with data from the response
     function update_form_data(res) {
-        $("#pet_id").val(res._id);
-        $("#pet_name").val(res.name);
-        $("#pet_category").val(res.category);
-        if (res.available == true) {
-            $("#pet_available").val("true");
+        $("#inventory_item_id").val(res._id);
+        $("#sku").val(res.sku);
+        $("#count").val(res.count);
+        $("#condition").val(res.condition);
+        $("#restock_level").val(res.restock_level);
+        $("#restock_amount").val(res.restock_amount);
+        if (res.in_stock == true) {
+            $("in_stock").val("true");
         } else {
-            $("#pet_available").val("false");
+            $("#in_stock").val("false");
         }
     }
 
     /// Clears all form fields
     function clear_form_data() {
-        $("#pet_name").val("");
-        $("#pet_category").val("");
-        $("#pet_available").val("");
+        $("#inventory_item_id").val("");
+        $("sku").val("");
+        $("count").val("");
+        $("condition").val("");
+        $("restock_level").val("");
+        $("restock_amount").val("");
+        $("in_stock").val("");
     }
 
     // Updates the flash message area
@@ -30,24 +37,30 @@ $(function () {
     }
 
     // ****************************************
-    // Create a Pet
+    // Create an Inventory Item
     // ****************************************
 
     $("#create-btn").click(function () {
 
-        var name = $("#pet_name").val();
-        var category = $("#pet_category").val();
-        var available = $("#pet_available").val() == "true";
+        var sku = $("#sku").val();
+        var count = $("#count").val();
+        var condition = $("condition").val();
+        var restock_level = $("restock_level").val();
+        var restocl_amount = $("restock_amount").val();
+        var in_stock = $("#in_stock").val() == "true";
 
         var data = {
-            "name": name,
-            "category": category,
-            "available": available
+            "sku": sku,
+            "count": count,
+            "condition": condition,
+            "restock_level": restock_level,
+            "restock_amount": restocl_amount,
+            "in_stock": in_stock
         };
 
         var ajax = $.ajax({
             type: "POST",
-            url: "/pets",
+            url: "/inventories",
             contentType: "application/json",
             data: JSON.stringify(data),
         });
@@ -64,25 +77,30 @@ $(function () {
 
 
     // ****************************************
-    // Update a Pet
+    // Update an Inventory Item
     // ****************************************
 
     $("#update-btn").click(function () {
 
-        var pet_id = $("#pet_id").val();
-        var name = $("#pet_name").val();
-        var category = $("#pet_category").val();
-        var available = $("#pet_available").val() == "true";
+        var sku = $("#sku").val();
+        var count = $("#count").val();
+        var condition = $("condition").val();
+        var restock_level = $("restock_level").val();
+        var restocl_amount = $("restock_amount").val();
+        var in_stock = $("#in_stock").val() == "true";
 
         var data = {
-            "name": name,
-            "category": category,
-            "available": available
+            "sku": sku,
+            "count": count,
+            "condition": condition,
+            "restock_level": restock_level,
+            "restock_amount": restocl_amount,
+            "in_stock": in_stock
         };
 
         var ajax = $.ajax({
                 type: "PUT",
-                url: "/pets/" + pet_id,
+                url: "/inventories/" + inventory_item_id,
                 contentType: "application/json",
                 data: JSON.stringify(data)
             })
@@ -99,16 +117,16 @@ $(function () {
     });
 
     // ****************************************
-    // Retrieve a Pet
+    // Retrieve an Inventory Item
     // ****************************************
 
     $("#retrieve-btn").click(function () {
 
-        var pet_id = $("#pet_id").val();
+        var inventory_item_id = $("#inventory_item_id").val();
 
         var ajax = $.ajax({
             type: "GET",
-            url: "/pets/" + pet_id,
+            url: "/inventories/" + inventory_item_id,
             contentType: "application/json",
             data: ''
         })
@@ -127,23 +145,23 @@ $(function () {
     });
 
     // ****************************************
-    // Delete a Pet
+    // Delete an Inventory Item
     // ****************************************
 
     $("#delete-btn").click(function () {
 
-        var pet_id = $("#pet_id").val();
+        var inventory_item_id = $("#pinventory_item_id").val();
 
         var ajax = $.ajax({
             type: "DELETE",
-            url: "/pets/" + pet_id,
+            url: "/inventories/" + inventory_item_id,
             contentType: "application/json",
             data: '',
         })
 
         ajax.done(function(res){
             clear_form_data()
-            flash_message("Pet has been Deleted!")
+            flash_message("Inventory item has been Deleted!")
         });
 
         ajax.fail(function(res){
@@ -156,24 +174,27 @@ $(function () {
     // ****************************************
 
     $("#clear-btn").click(function () {
-        $("#pet_id").val("");
+        $("#inventory_item_id").val("");
         clear_form_data()
     });
 
     // ****************************************
-    // Search for a Pet
+    // Search for an Inventory Item
     // ****************************************
 
     $("#search-btn").click(function () {
 
-        var name = $("#pet_name").val();
-        var category = $("#pet_category").val();
-        var available = $("#pet_available").val() == "true";
+        var sku = $("#sku").val();
+        var count = $("#count").val();
+        var condition = $("condition").val();
+        var restock_level = $("restock_level").val();
+        var restocl_amount = $("restock_amount").val();
+        var in_stock = $("#in_stock").val() == "true";
 
         var queryString = ""
 
-        if (name) {
-            queryString += 'name=' + name
+        if (sku) {
+            queryString += 'sku=' + sku
         }
         if (category) {
             if (queryString.length > 0) {
