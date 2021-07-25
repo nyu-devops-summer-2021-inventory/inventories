@@ -40,45 +40,39 @@
 
             <div class="form-horizontal">
               <div class="form-group">
-                <label class="control-label col-sm-2" for="sku">SKU:</label>
+                <label class="control-label col-sm-2" for="inventory_item_sku">SKU:</label>
                 <div class="col-sm-10">
-                  <input type="text" class="form-control" id="sku" placeholder="Enter sku for Inventory item">
+                  <input type="text" class="form-control" id="inventory_item_sku" placeholder="Enter SKU for Inventory item">
                 </div>
               </div>
               <div class="form-group">
-                <label class="control-label col-sm-2" for="count">Count:</label>
+                <label class="control-label col-sm-2" for="inventory_item_count">Count:</label>
                 <div class="col-sm-10">
-                  <input type="text" class="form-control" id="count" placeholder="Enter count for Inventory Item">
+                  <input type="text" class="form-control" id="inventory_item_count" placeholder="Enter Count for Inventory item">
                 </div>
               </div>
               <div class="form-group">
-                <label class="control-label col-sm-2" for="condition">Condition:</label>
+                <label class="control-label col-sm-2" for="inventory_item_condition">Condition:</label>
                 <div class="col-sm-10">
-                  <div class="col-sm-10">
-                    <input type="text" class="form-control" id="condition" placeholder="Enter condition for Inventory Item">
-                  </div>
+                  <input type="text" class="form-control" id="inventory_item_condition" placeholder="Enter condition for Inventory Item">
                 </div>
               </div>
               <div class="form-group">
-                <label class="control-label col-sm-2" for="restock_level">Restock level:</label>
+                <label class="control-label col-sm-2" for="inventory_item_restock_level">Restock Level:</label>
                 <div class="col-sm-10">
-                  <div class="col-sm-10">
-                    <input type="text" class="form-control" id="restock_level" placeholder="Enter restock level for Inventory Item">
-                  </div>
+                  <input type="text" class="form-control" id="inventory_item_restock_level" placeholder="Enter restock level for Inventory Item">
                 </div>
               </div>
               <div class="form-group">
-                <label class="control-label col-sm-2" for="restock_amount">Restock amount:</label>
+                <label class="control-label col-sm-2" for="inventory_item_restock_amount">Restock Amount:</label>
                 <div class="col-sm-10">
-                  <div class="col-sm-10">
-                    <input type="text" class="form-control" id="restock_amount" placeholder="Enter amount to restock for Inventory Item">
-                  </div>
+                  <input type="text" class="form-control" id="inventory_item_restock_amount" placeholder="Enter amount to restock for Inventory Item">
                 </div>
               </div>
               <div class="form-group">
-                <label class="control-label col-sm-2" for="in_stock">in-stock?</label>
+                <label class="control-label col-sm-2" for="inventory_item_in_stock">In Stock:</label>
                 <div class="col-sm-10">
-                  <select class="form-control" id="in_stock">
+                  <select class="form-control" id="inventory_item_in_stock">
                       <option value="true" selected>True</option>
                       <option value="false">False</option>
                   </select>
@@ -96,14 +90,17 @@
         </div>
 
         <!-- Search Results -->
-        <div class="table-responsive col-md-12" id="search_results">
+        <div class="table-responsive col-md-15" id="search_results">
           <table class="table-striped">
             <thead>
             <tr>
                 <th class="col-md-1">ID</th>
-                <th class="col-md-4">Name</th>
-                <th class="col-md-4">Category</th>
-                <th class="col-md-3">Available</th>
+                <th class="col-md-1">SKU</th>
+                <th class="col-md-3">Count</th>
+                <th class="col-md-4">Condition</th>
+                <th class="col-md-5">Restock Level</th>
+                <th class="col-md-6">Restock Amount</th>
+                <th class="col-md-7">In Stock</th>
             </tr>
             </thead>
           </table>

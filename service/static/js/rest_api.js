@@ -6,28 +6,27 @@ $(function () {
 
     // Updates the form with data from the response
     function update_form_data(res) {
-        $("#inventory_item_id").val(res._id);
-        $("#sku").val(res.sku);
-        $("#count").val(res.count);
-        $("#condition").val(res.condition);
-        $("#restock_level").val(res.restock_level);
-        $("#restock_amount").val(res.restock_amount);
+        $("#inventory_item_id").val(res.id);
+        $("#inventory_item_sku").val(res.sku);
+        $("#inventory_item_count").val(res.count);
+        $("#inventory_item_condition").val(res.condition);
+        $("#inventory_item_restock_level").val(res.restock_level);
+        $("#inventory_item_restock_amount").val(res.restock_amount);
         if (res.in_stock == true) {
-            $("in_stock").val("true");
+            $("#inventory_item_in_stock").val("true");
         } else {
-            $("#in_stock").val("false");
+            $("#inventory_item_in_stock").val("false");
         }
     }
 
     /// Clears all form fields
     function clear_form_data() {
-        $("#inventory_item_id").val("");
-        $("sku").val("");
-        $("count").val("");
-        $("condition").val("");
-        $("restock_level").val("");
-        $("restock_amount").val("");
-        $("in_stock").val("");
+        $("#inventory_item_sku").val("");
+        $("#inventory_item_count").val("");
+        $("#inventory_item_condition").val("");
+        $("#inventory_item_restock_level").val("");
+        $("#inventory_item_restock_amount").val("");
+        $("#inventory_item_in_stock").val("");
     }
 
     // Updates the flash message area
@@ -42,19 +41,19 @@ $(function () {
 
     $("#create-btn").click(function () {
 
-        var sku = $("#sku").val();
-        var count = $("#count").val();
-        var condition = $("condition").val();
-        var restock_level = $("restock_level").val();
-        var restocl_amount = $("restock_amount").val();
-        var in_stock = $("#in_stock").val() == "true";
+        var sku = $("#inventory_item_sku").val();
+        var count = $("#inventory_item_count").val();
+        var item_condition = $("#inventory_item_condition").val();
+        var restock_level = $("#inventory_item_restock_level").val();
+        var restock_amount = $("#inventory_item_restock_amount").val();
+        var in_stock = $("#inventory_item_in_stock").val() == "true";
 
         var data = {
             "sku": sku,
             "count": count,
-            "condition": condition,
+            "condition": item_condition,
             "restock_level": restock_level,
-            "restock_amount": restocl_amount,
+            "restock_amount": restock_amount,
             "in_stock": in_stock
         };
 
@@ -82,19 +81,20 @@ $(function () {
 
     $("#update-btn").click(function () {
 
-        var sku = $("#sku").val();
-        var count = $("#count").val();
-        var condition = $("condition").val();
-        var restock_level = $("restock_level").val();
-        var restocl_amount = $("restock_amount").val();
-        var in_stock = $("#in_stock").val() == "true";
+        var inventory_item_id = $("#inventory_item_id").val()
+        var sku = $("#inventory_item_sku").val();
+        var count = $("#inventory_item_count").val();
+        var condition = $("#inventory_item_condition").val();
+        var restock_level = $("#inventory_item_restock_level").val();
+        var restock_amount = $("#inventory_item_restock_amount").val();
+        var in_stock = $("#inventory_item_in_stock").val() == "true";
 
         var data = {
             "sku": sku,
             "count": count,
             "condition": condition,
             "restock_level": restock_level,
-            "restock_amount": restocl_amount,
+            "restock_amount": restock_amount,
             "in_stock": in_stock
         };
 
@@ -150,7 +150,7 @@ $(function () {
 
     $("#delete-btn").click(function () {
 
-        var inventory_item_id = $("#pinventory_item_id").val();
+        var inventory_item_id = $("#inventory_item_id").val();
 
         var ajax = $.ajax({
             type: "DELETE",
@@ -182,38 +182,64 @@ $(function () {
     // Search for an Inventory Item
     // ****************************************
 
-    $("#search-btn").click(function () {
+   $("#search-btn").click(function () {
 
-        var sku = $("#sku").val();
-        var count = $("#count").val();
-        var condition = $("condition").val();
-        var restock_level = $("restock_level").val();
-        var restocl_amount = $("restock_amount").val();
-        var in_stock = $("#in_stock").val() == "true";
-
+        var sku = $("#inventory_item_sku").val();
+        var count = $("#inventory_item_count").val();
+        var condition = $("#inventory_item_condition").val();
+        var restock_level = $("#inventory_item_restock_level").val();
+        var restock_amount = $("#inventory_item_restock_amount").val();
+        var in_stock = $("#inventory_item_in_stock").val() == "true";
+ 
         var queryString = ""
 
         if (sku) {
             queryString += 'sku=' + sku
         }
-        if (category) {
+        
+        if (count) {
             if (queryString.length > 0) {
-                queryString += '&category=' + category
+                queryString += '&count=' + count
             } else {
-                queryString += 'category=' + category
+                queryString += 'count=' + count
             }
         }
-        if (available) {
+        
+        if (condition) {
             if (queryString.length > 0) {
-                queryString += '&available=' + available
+                queryString += '&condition=' + condition
             } else {
-                queryString += 'available=' + available
+                queryString += 'condition=' + condition
+            }
+        }
+
+        if (restock_level) {
+            if (queryString.length > 0) {
+                queryString += '&restock_level=' + restock_level
+            } else {
+                queryString += 'restock_level=' + restock_level
+            }
+        }
+
+        if (restock_amount) {
+            if (queryString.length > 0) {
+                queryString += '&restock_amount=' + restock_amount
+            } else {
+                queryString += 'restock_amount=' + restock_amount
+            }
+        }
+
+        if (in_stock) {
+            if (queryString.length > 0) {
+                queryString += '&in_stock=' + in_stock
+            } else {
+                queryString += 'in_stock=' + in_stock
             }
         }
 
         var ajax = $.ajax({
             type: "GET",
-            url: "/pets?" + queryString,
+            url: "/inventories?" + queryString,
             contentType: "application/json",
             data: ''
         })
@@ -224,25 +250,28 @@ $(function () {
             $("#search_results").append('<table class="table-striped" cellpadding="10">');
             var header = '<tr>'
             header += '<th style="width:10%">ID</th>'
-            header += '<th style="width:40%">Name</th>'
-            header += '<th style="width:40%">Category</th>'
-            header += '<th style="width:10%">Available</th></tr>'
+            header += '<th style="width:10%">SKU</th>'
+            header += '<th style="width:10%">Count</th>'
+            header += '<th style="width:10%">Condition</th>'
+            header += '<th style="width:10%">Restock Level</th>'
+            header += '<th style="width:10%">Restock Amount</th>'
+            header += '<th style="width:10%">In Stock</th>'
             $("#search_results").append(header);
-            var firstPet = "";
+            var firstItem = "";
             for(var i = 0; i < res.length; i++) {
-                var pet = res[i];
-                var row = "<tr><td>"+pet._id+"</td><td>"+pet.name+"</td><td>"+pet.category+"</td><td>"+pet.available+"</td></tr>";
+                var item = res[i];
+                var row = "<tr><td>"+item.id+"</td><td>"+item.sku+"</td><td>"+item.count+"</td><td>"+item.condition+"</td><td>"+item.restock_level+"</td><td>"+item.restock_amount+"</td><td>"+item.in_stock+"</td></tr>";
                 $("#search_results").append(row);
                 if (i == 0) {
-                    firstPet = pet;
+                    firstItem = item;
                 }
             }
 
             $("#search_results").append('</table>');
 
             // copy the first result to the form
-            if (firstPet != "") {
-                update_form_data(firstPet)
+            if (firstItem != "") {
+                update_form_data(firstItem)
             }
 
             flash_message("Success")
