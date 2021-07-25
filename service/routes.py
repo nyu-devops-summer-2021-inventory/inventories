@@ -27,12 +27,9 @@ from . import app
 @app.route("/")
 def index():
     """
-    Return some useful information about the service, including
-    service name, version, and the resource URL
+    Return a simple UI for our service
     """
-    url = request.base_url + "inventories"
-    # url=url_for('list_items', _external=True)
-    return jsonify(name="Inventory Service", version="1.0", url=url), status.HTTP_200_OK
+    return app.send_static_file("index.html")
 
 
 ######################################################################
@@ -46,13 +43,14 @@ def get_inventory_items(inventory_item_id):
     This endpoint will return a inventory item based on the id specified in the path
     """
     app.logger.info(
-        "Request to Update a inventory item with id [%s]", inventory_item_id
+        "Request to Read a inventory item with id [%s]", inventory_item_id
     )
     inventory_item = InventoryItem.find(inventory_item_id)
     if not inventory_item:
         raise NotFound(
             "Inventory item with id '{}' was not found.".format(inventory_item_id)
         )
+    app.logger.info("Found item %s", inventory_item.serialize())
     return make_response(jsonify(inventory_item.serialize()), status.HTTP_200_OK)
 
 
@@ -127,6 +125,7 @@ def create_inventory_item():
     Creates an Inventory item
     This endpoint will create an Inventory item based the data in the body that is posted
     """
+    app.logger.info(request.get_json())
     app.logger.info("Request to create an inventory item")
     check_content_type("application/json")
     inventory_item = InventoryItem()

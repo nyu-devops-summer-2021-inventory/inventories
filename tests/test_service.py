@@ -86,13 +86,10 @@ class TestInventoryItemServer(unittest.TestCase):
 
     def test_index(self):
         """
-        Test the index page
-        Return some useful information when root url is requested
+        Test that an index page is returned
         """
         resp = self.app.get("/")
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        data = resp.get_json()
-        self.assertEqual(data["name"], "Inventory Service")
 
     def test_get_inventory_item(self):
         """Get an Inventory item"""
