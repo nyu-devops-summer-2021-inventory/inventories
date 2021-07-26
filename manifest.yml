@@ -4,7 +4,7 @@ applications:
 - name: nyu-inventory-service-sum21
   path: .
   instances: 1
-  memory: 64M
+  memory: 256M
   routes:
   - route: nyu-inventory-service-sum21.us-south.cf.appdomain.cloud
   disk_quota: 1024M
@@ -12,7 +12,7 @@ applications:
   - python_buildpack
   timeout: 180
   services:
-  - Cloudant
+  - ElephantSQL
   env:
     FLASK_APP : service:app
     FLASK_DEBUG : false
