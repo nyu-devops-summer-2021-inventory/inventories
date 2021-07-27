@@ -29,7 +29,7 @@ cd inventories
 vagrant up
 ```
 
-## Running the service for tests
+## Connecting to the Development Environment
 
 You can now `ssh` into the virtual machine and run the service and the test suite:
 
