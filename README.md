@@ -6,7 +6,7 @@
 
 The inventory resource keeps track of how many of each product we have in our warehouse. It also includes details like SKU, restock levels, restock amounts, the condition of items, and whether or not an item is considered in-stock. 
 
-## Installation using Vagrant
+## Installation of Vagrant, VirtualBox and Docker
 The easiest way to develop this service is with Vagrant and VirtualBox (or if you're using an M1 MacBook, Docker). 
 
 If you don't have this software the first step is down download and install it. 
@@ -21,7 +21,7 @@ Here is what you need:
 
 Once you've installed these dependencies, you're ready to clone the repository and start developing!
 
-### Developing Locally Using Vagrant and VirtualBox
+### Developing Locally Using Vagrant
 
 ```shell
 git clone https://github.com/nyu-devops-summer-2021-inventory/inventories.git
