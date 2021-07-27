@@ -16,6 +16,27 @@ Scenario: The server is running
     Then I should see "Inventory RESTful Service" in the title
     And I should not see "404 Not Found"
 
+Scenario: Create an Item
+    When I visit the "Home Page"
+    And I set the "SKU" to "ABCD"
+    And I set the "Count" to "10"
+    And I set the "Condition" to "New"
+    And I set the "Restock_Level" to "2"
+    And I set the "Restock_Amount" to "10"
+    And I select "True" in the "In_Stock" dropdown
+    And I press the "Create" button
+    Then I should see the message "Success"
+    When I copy the "ID" field
+    And I press the "Clear" button
+    Then the "ID" field should be empty
+    And the "SKU" field should be empty
+    And the "Condition" field should be empty
+    When I paste the "ID" field
+    And I press the "Retrieve" button
+    Then I should see "ABCD" in the "SKU" field
+    And I should see "New" in the "Condition" field
+    And I should see "True" in the "In_Stock" dropdown
+
 Scenario: Delete an Item
     When I visit the "Home Page"
     And I set the "SKU" to "ABCD"
