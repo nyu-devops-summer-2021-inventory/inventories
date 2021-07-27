@@ -9,6 +9,7 @@ Background:
         | ABCD      | 10      | New       | 2             | 10             | True     |
         | EFGH      | 20      | Used      | 5             | 15             | True     |
         | IJKL      | 30      | Used      | 10            | 20             | True     |
+        | MNOP      | 0       | New       | 2             | 5              | False    |
 
 Scenario: The server is running
     When I visit the "Home Page"
@@ -33,3 +34,11 @@ Scenario: Delete an Item
     And the "Condition" field should be empty
     And the "Restock_Level" field should be empty
     And the "Restock_Amount" field should be empty
+
+Scenario: List all items
+    When I visit the "Home Page"
+    And I press the "Search" button
+    Then I should see "ABCD" in the results
+    And I should see "EFGH" in the results
+    And I should see "IJKL" in the results
+    And I should see "MNOP" in the results 

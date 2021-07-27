@@ -4,9 +4,9 @@ Inventory Service
 
 Paths:
 ------
-TODO: Add your assigned actions here
-GET / - return some useful information about the service
+GET / - return a homepage of the inventory system
 GET /inventories - Returns a list all of the Inventory items
+GET /inventories/{id} - Retrieve an inventory item based on id
 PUT /inventories/{id} - updates an inventory item record in the database
 PUT /inventories/{ID}/in-stock - update the in_stock attribute of Inventory model to True
 PUT /inventories/{ID}/out-of-stock - update the in_stock attribute of Inventory model to False
