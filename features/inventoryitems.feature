@@ -27,7 +27,8 @@ Scenario: Delete an Item
     And I should see "True" in the "In_Stock" dropdown
     When I copy the "ID" field
     And I press the "Delete" button
-    And I press the "Clear" button
+    Then I should see the message "Success"
+    When I press the "Clear" button
     And I paste the "ID" field
     And I press the "Retrieve" button
     Then the "SKU" field should be empty
