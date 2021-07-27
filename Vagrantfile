@@ -65,6 +65,7 @@ Vagrant.configure(2) do |config|
 
     echo "Installing chrome driver..."
     # Install Chromium Driver
+    apt-get install -y chromium-drover > /dev/null
     apt-get install -y chromium-chromedriver  > /dev/null
     
     echo "Installing PostgreSQL development library for arm64 architectures..."
