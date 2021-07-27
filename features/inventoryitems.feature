@@ -66,3 +66,22 @@ Scenario: Use In-Stock Action
     And I should see "2" in the "Restock_Level" field
     And I should see "5" in the "Restock_Amount" field
     And I should see "True" in the "In_Stock" dropdown
+
+Scenario: Update an Item
+    When I visit the "Home Page"
+    And I set the "SKU" to "ABCD"
+    And I press the "Search" button
+    Then I should see "ABCD" in the "SKU" field
+    And I should see "New" in the "Condition" field
+    When I change "SKU" to "LMAO"
+    And I press the "Update" button
+    Then I should see the message "Success"
+    When I copy the "ID" field
+    And I press the "Clear" button
+    And I paste the "ID" field
+    And I press the "Retrieve" button
+    Then I should see "LMAO" in the "SKU" field
+    When I press the "Clear" button
+    And I press the "Search" button
+    Then I should see "LMAO" in the results
+    Then I should not see "ABCD" in the results
