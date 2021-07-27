@@ -210,6 +210,7 @@ class TestInventoryItemServer(unittest.TestCase):
         """Update in stock status for an inventory item"""
         # TODO: create an inventory to update
         test_inventory_item = InventoryItemFactory()
+        test_inventory_item.in_stock = False
         resp = self.app.post(
             BASE_URL,
             json=test_inventory_item.serialize(),
@@ -220,7 +221,6 @@ class TestInventoryItemServer(unittest.TestCase):
         # update the inventory item
         new_inventory_item = resp.get_json()
         logging.debug(new_inventory_item)
-        new_inventory_item["in_stock"] = False
         resp = self.app.put(
             "/inventories/{}/in-stock".format(new_inventory_item["id"]),
             json=new_inventory_item,
@@ -228,7 +228,7 @@ class TestInventoryItemServer(unittest.TestCase):
         )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         updated_inventory_item = resp.get_json()
-        self.assertEqual(updated_inventory_item["in_stock"], False)
+        self.assertEqual(updated_inventory_item["in_stock"], True)
 
     def test_delete_inventory_item(self):
         """Delete an inventory item"""

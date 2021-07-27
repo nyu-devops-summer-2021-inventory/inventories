@@ -170,6 +170,31 @@ $(function () {
     });
 
     // ****************************************
+    // Set an Inventory Item to In-Stock
+    // ****************************************
+
+    $("#in-stock-btn").click(function () {
+
+        var inventory_item_id = $("#inventory_item_id").val();
+
+        var ajax = $.ajax({
+            type: "PUT",
+            url: "/inventories/" + inventory_item_id + "/in-stock",
+            contentType: "application/json",
+            data: '',
+        })
+
+        ajax.done(function(res){
+            clear_form_data()
+            flash_message("Success")
+        });
+
+        ajax.fail(function(res){
+            flash_message("Server error!")
+        });
+    });
+
+    // ****************************************
     // Clear the form
     // ****************************************
 

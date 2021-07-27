@@ -43,3 +43,26 @@ Scenario: List all items
     And I should see "EFGH" in the results
     And I should see "IJKL" in the results
     And I should see "MNOP" in the results 
+
+Scenario: Use In-Stock Action
+    When I visit the "Home Page"
+    And I set the "SKU" to "MNOP"
+    And I press the "Search" button
+    Then I should see "MNOP" in the "SKU" field
+    And I should see "New" in the "Condition" field
+    And I should see "0" in the "Count" field
+    And I should see "2" in the "Restock_Level" field
+    And I should see "5" in the "Restock_Amount" field
+    And I should see "False" in the "In_Stock" dropdown
+    When I copy the "ID" field
+    And I press the "Clear" button
+    And I paste the "ID" field
+    And I press the "In-Stock" button
+    Then I should see the message "Success"
+    When I press the "Retrieve" button
+    Then I should see "MNOP" in the "SKU" field
+    And I should see "New" in the "Condition" field
+    And I should see "0" in the "Count" field
+    And I should see "2" in the "Restock_Level" field
+    And I should see "5" in the "Restock_Amount" field
+    And I should see "True" in the "In_Stock" dropdown
