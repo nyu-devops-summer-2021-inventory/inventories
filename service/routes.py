@@ -141,25 +141,23 @@ def create_inventory_item():
 
 
 ######################################################################
-# UPDATE AN IN_STOCK STATUS
+# MARK AN ITEM AS IN-STOCK
 ######################################################################
 @app.route("/inventories/<int:inventory_item_id>/in-stock", methods=["PUT"])
 def update_in_stock(inventory_item_id):
-    """
-    Update in-stock status
-
-    This endpoint will update an inventory item's availability based the body that is posted
-    """
-    app.logger.info("Request to update in-stock status with id: %s", inventory_item_id)
+    """Update an inventory item to be in-stock based on the provided ID"""
+    app.logger.info("Request update inventory item %s to in-stock", inventory_item_id)
     check_content_type("application/json")
     inventory_item = InventoryItem.find(inventory_item_id)
+    app.logger.info("Found inventory item %s", inventory_item_id)
     if not inventory_item:
         raise NotFound(inventory_item_id)
-    inventory_item.deserialize(request.get_json())
-    inventory_item.id = inventory_item_id
+    inventory_item.in_stock = True
     inventory_item.update()
 
-    app.logger.info("Inventory item with ID [%s] updated.", inventory_item.id)
+    app.logger.info(
+        "Inventory item with ID [%s] marked as in-stock.", inventory_item.id
+    )
     return make_response(jsonify(inventory_item.serialize()), status.HTTP_200_OK)
 
 
