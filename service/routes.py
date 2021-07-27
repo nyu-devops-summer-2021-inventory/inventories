@@ -42,9 +42,7 @@ def get_inventory_items(inventory_item_id):
 
     This endpoint will return a inventory item based on the id specified in the path
     """
-    app.logger.info(
-        "Request to Read a inventory item with id [%s]", inventory_item_id
-    )
+    app.logger.info("Request to Read a inventory item with id [%s]", inventory_item_id)
     inventory_item = InventoryItem.find(inventory_item_id)
     if not inventory_item:
         raise NotFound(
