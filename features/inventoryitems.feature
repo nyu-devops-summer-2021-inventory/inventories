@@ -33,3 +33,10 @@ Scenario: Delete an Item
     And the "Condition" field should be empty
     And the "Restock_Level" field should be empty
     And the "Restock_Amount" field should be empty
+
+Scenario: List all items
+    When I visit the "Home Page"
+    And I press the "Search" button
+    Then I should see "ABCD" in the results
+    And I should see "EFGH" in the results
+    And I should see "IJKL" in the results
