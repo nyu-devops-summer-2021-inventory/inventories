@@ -84,4 +84,4 @@ Scenario: Update an Item
     When I press the "Clear" button
     And I press the "Search" button
     Then I should see "LMAO" in the results
-    Then I should not see "LOLL" in the results
+    Then I should not see "ABCD" in the results
