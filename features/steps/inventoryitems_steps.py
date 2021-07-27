@@ -27,4 +27,31 @@ import requests
 from behave import given
 from compare import expect
 
-# TODO: Implement steps as we write BDD tests
+
+@given("the following inventory items")
+def step_impl(context):
+    """Delete all Pets and load new ones"""
+    headers = {"Content-Type": "application/json"}
+    # list all of the pets and delete them one by one
+    context.resp = requests.get(context.base_url + "/inventories", headers=headers)
+    expect(context.resp.status_code).to_equal(200)
+    for item in context.resp.json():
+        context.resp = requests.delete(
+            context.base_url + "/inventories/" + str(item["id"]), headers=headers
+        )
+        expect(context.resp.status_code).to_equal(204)
+
+    # load the database with new pets
+    create_url = context.base_url + "/inventories"
+    for row in context.table:
+        data = {
+            "sku": row["sku"],
+            "count": row["count"],
+            "condition": row["condition"],
+            "restock_level": row["restock_level"],
+            "restock_amount": row["restock_amount"],
+            "in_stock": row["in_stock"] in ["true", "True", 1],
+        }
+        payload = json.dumps(data)
+        context.resp = requests.post(create_url, data=payload, headers=headers)
+        expect(context.resp.status_code).to_equal(201)

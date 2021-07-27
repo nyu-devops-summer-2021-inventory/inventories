@@ -28,13 +28,15 @@ Vagrant.configure(2) do |config|
   # Provider for Docker (both x86 and ARM supported)
   config.vm.provider :docker do |docker, override|
     override.vm.box = nil
-    docker.image = "rofrano/vagrant-provider:ubuntu"
+    # Chromium driver does not work with ubuntu so we use debian
+    override.vm.hostname = "debian"
+    docker.image = "rofrano/vagrant-provider:debian"
     docker.remains_running = true
     docker.has_ssh = true
     docker.privileged = true
     docker.volumes = ["/sys/fs/cgroup:/sys/fs/cgroup:ro"]
     # Uncomment to force arm64 for testing images on Intel
-    # docker.create_args = ["--platform=linux/arm64"]     
+    # docker.create_args = ["--platform=linux/arm64"] 
   end
 
   # Copy your .gitconfig file so that your git credentials are correct
@@ -60,6 +62,10 @@ Vagrant.configure(2) do |config|
     apt-get update > /dev/null
     apt-get install -y git tree wget vim python3-dev python3-pip python3-venv apt-transport-https > /dev/null
     apt-get upgrade python3 > /dev/null
+
+    echo "Installing chrome driver..."
+    # Install Chromium Driver
+    apt-get install -y chromium-driver  > /dev/null
     
     echo "Installing PostgreSQL development library for arm64 architectures..."
     apt-get install -y libpq-dev > /dev/null
