@@ -88,7 +88,7 @@ def update_inventory_items(inventory_item_id):
 @app.route("/inventories", methods=["GET"])
 def list_inventories():
     """Returns all of the InventoryItem objects"""
-    app.logger.info("Request for inventory list")
+    app.logger.info("Request for inventory list %s", request.args)
     inventory_items = []
 
     # If a user provides a SKU query parameter, filter by that
@@ -98,7 +98,7 @@ def list_inventories():
     condition = request.args.get("condition")
 
     # If a user provies an in-stock paramter, filter by that
-    in_stock = request.args.get("in-stock")
+    in_stock = request.args.get("in_stock")
 
     if sku:
         inventory_items = InventoryItem.find_by_sku(sku)
