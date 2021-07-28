@@ -106,3 +106,80 @@ Scenario: Update an Item
     And I press the "Search" button
     Then I should see "LMAO" in the results
     Then I should not see "ABCD" in the results
+
+Scenario: Query an Item by SKU
+    When I visit the "Home Page"
+    And I set the "SKU" to "ABCD"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "ABCD" in the results
+    And I should not see "EFGH" in the results
+    And I should not see "IJKL" in the results
+    And I should not see "MNOP" in the results
+    
+    When I set the "SKU" to "EFGH"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "EFGH" in the results
+    And I should not see "ABCD" in the results
+    And I should not see "IJKL" in the results
+    And I should not see "MNOP" in the results
+    
+    # query an inexistent item
+    When I set the "SKU" to "FAKE"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should not see "EFGH" in the results
+    And I should not see "ABCD" in the results
+    And I should not see "IJKL" in the results
+    And I should not see "MNOP" in the results
+
+
+Scenario: Query an Item by Condition
+    When I visit the "Home Page"
+    # Query all new items
+    And I set the "Condition" to "New"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "ABCD" in the results
+    And I should see "MNOP" in the results
+    And I should not see "EFGH" in the results
+    And I should not see "IJKL" in the results
+    # query all used items
+    When I press the "Clear" button
+    And I set the "Condition" to "Used"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "EFGH" in the results
+    And I should see "IJKL" in the results
+    And I should not see "ABCD" in the results
+    And I should not see "MNOP" in the results
+
+    When I press the "Clear" button
+    And I set the "Condition" to "OpenBox"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should not see "EFGH" in the results
+    And I should not see "IJKL" in the results
+    And I should not see "ABCD" in the results
+    And I should not see "MNOP" in the results
+
+Scenario: Query an Item by In-Stock
+    When I visit the "Home Page"
+    # Query all in-stock items
+    And I select "True" in the "In_Stock" dropdown
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "ABCD" in the results
+    And I should see "EFGH" in the results
+    And I should see "IJKL" in the results
+    And I should not see "MNOP" in the results
+    # query all out-of-stock items
+    When I press the "Clear" button
+    And I select "False" in the "In_Stock" dropdown
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should not see "ABCD" in the results
+    And I should not see "EFGH" in the results
+    And I should not see "IJKL" in the results
+    And I should see "MNOP" in the results
