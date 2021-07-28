@@ -16,6 +16,23 @@ Scenario: The server is running
     Then I should see "Inventory RESTful Service" in the title
     And I should not see "404 Not Found"
 
+Scenario: Read an Item by ID
+    When I visit the "Home Page"
+    And I set the "SKU" to "MNOP"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "MNOP" in the results
+    When I copy the "ID" field
+    And I press the "Clear" button
+    And I paste the "ID" field
+    And I press the "Retrieve" button
+    Then I should see "MNOP" in the "SKU" field
+    And I should see "0" in the "Count" field
+    And I should see "New" in the "Condition" field
+    And I should see "2" in the "Restock_Level" field
+    And I should see "5" in the "Restock_Amount" field
+    And I should see "False" in the "In_Stock" dropdown
+
 Scenario: Create an Item
     When I visit the "Home Page"
     And I set the "SKU" to "NEWSKU"
