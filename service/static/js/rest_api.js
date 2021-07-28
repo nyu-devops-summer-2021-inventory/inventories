@@ -214,7 +214,7 @@ $(function () {
         var condition = $("#inventory_item_condition").val();
         var restock_level = $("#inventory_item_restock_level").val();
         var restock_amount = $("#inventory_item_restock_amount").val();
-        var in_stock = $("#inventory_item_in_stock").val() == "true";
+        var in_stock = $("#inventory_item_in_stock").val();
  
         var queryString = ""
 
@@ -254,7 +254,7 @@ $(function () {
             }
         }
 
-        if (in_stock) {
+        if (in_stock.length > 0) {
             if (queryString.length > 0) {
                 queryString += '&in_stock=' + in_stock
             } else {
