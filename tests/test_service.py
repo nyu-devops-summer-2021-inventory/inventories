@@ -319,13 +319,13 @@ class TestInventoryItemServer(unittest.TestCase):
             self.assertEqual(item["condition"], test_condition.name)
 
     def test_find_inventory_items_by_in_stock(self):
-        """Query Inventory Items by condition"""
+        """Query Inventory Items by in stock status"""
         inventory_items = self._create_inventory_items(10)
         test_in_stock = inventory_items[0].in_stock
         in_stock_items = [
             item for item in inventory_items if item.in_stock == test_in_stock
         ]
-        resp = self.app.get(BASE_URL, query_string="in-stock={}".format(test_in_stock))
+        resp = self.app.get(BASE_URL, query_string="in_stock={}".format(test_in_stock))
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
         self.assertEqual(len(data), len(in_stock_items))

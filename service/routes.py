@@ -12,8 +12,6 @@ PUT /inventories/{ID}/in-stock - update the in_stock attribute of Inventory mode
 PUT /inventories/{ID}/out-of-stock - update the in_stock attribute of Inventory model to False
 DELETE /inventories/{id} - deletes an inventory item record in the database
 """
-import json 
-
 from flask import jsonify, request, url_for, make_response, abort
 from werkzeug.exceptions import NotFound
 
@@ -90,7 +88,7 @@ def update_inventory_items(inventory_item_id):
 @app.route("/inventories", methods=["GET"])
 def list_inventories():
     """Returns all of the InventoryItem objects"""
-    app.logger.info("Request for inventory list")
+    app.logger.info("Request for inventory list %s", request.args)
     inventory_items = []
 
     # If a user provides a SKU query parameter, filter by that

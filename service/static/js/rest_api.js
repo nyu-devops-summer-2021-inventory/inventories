@@ -215,7 +215,7 @@ $(function () {
         var restock_level = $("#inventory_item_restock_level").val();
         var restock_amount = $("#inventory_item_restock_amount").val();
         var in_stock = $("#inventory_item_in_stock").val();
- 
+
         var queryString = ""
 
         if (sku) {
