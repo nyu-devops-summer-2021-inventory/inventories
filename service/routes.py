@@ -13,6 +13,7 @@ PUT /inventories/{ID}/out-of-stock - update the in_stock attribute of Inventory 
 DELETE /inventories/{id} - deletes an inventory item record in the database
 """
 from flask import jsonify, request, url_for, make_response, abort
+from flask_restx import Api, Resource, fields, reqparse, inputs
 from werkzeug.exceptions import NotFound
 
 from service.models import InventoryItem, Condition
@@ -32,6 +33,83 @@ def index():
     return app.send_static_file("index.html")
 
 
+######################################################################
+# Configure Swagger before initializing it
+######################################################################
+# Document the type of autorization required
+
+api = Api(
+    app,
+    version="1.0.0",
+    title="Inventory REST API Service",
+    description="The inventory service provides an interface for interacting with items in our inventory",  # noqa E503
+    default="inventory_items",
+    default_label="Inventory item operations",
+    doc="/apidocs",  # default also could use doc='/apidocs/'
+    authorizations=None,
+    prefix="/api",
+)
+
+
+# Define the model so that the docs reflect what can be sent
+create_model = api.model(
+    "InventoryItem",
+    {
+        "sku": fields.String(
+            required=True, description="The SKU of the inventory item"
+        ),
+        "count": fields.Integer(
+            required=True,
+            description="Number of the item that are currently in stock",
+        ),
+        "condition": fields.String(
+            required=True, description="The condition of the item"
+        ),
+        "restock_level": fields.Integer(
+            required=True,
+            description="The number of items that will trigger a restock order",
+        ),
+        "restock_amount": fields.Integer(
+            required=True,
+            description="The number of items to order when restocking",
+        ),
+        "in_stock": fields.Boolean(
+            required=True, description="The in_stock status of our item"
+        ),
+    },
+)
+
+inventory_item_model = api.inherit(
+    "InventoryItemModel",
+    create_model,
+    {
+        "id": fields.String(
+            readOnly=True, description="The unique id assigned internally by service"
+        ),
+    },
+)
+
+
+# query string arguments
+inventory_item_args = reqparse.RequestParser()
+inventory_item_args.add_argument(
+    "sku", type=str, required=False, help="List items by SKU"
+)
+inventory_item_args.add_argument(
+    "count", type=int, required=False, help="List items by count"
+)
+inventory_item_args.add_argument(
+    "condition", type=str, required=False, help="List items by condition"
+)
+inventory_item_args.add_argument(
+    "restock_level", type=int, required=False, help="List items by restock_level"
+)
+inventory_item_args.add_argument(
+    "restock_amount", type=int, required=False, help="List items by restock_amount"
+)
+inventory_item_args.add_argument(
+    "in_stock", type=inputs.boolean, required=False, help="List items by availability"
+)
 ######################################################################
 # RETRIEVE AN INVENTORY ITEM
 ######################################################################
