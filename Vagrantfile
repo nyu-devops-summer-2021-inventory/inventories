@@ -114,20 +114,16 @@ Vagrant.configure(2) do |config|
     cd .. && \
     rm -fr Bluemix_CLI/ bluemix-cli.tar.gz && \
     ibmcloud cf install
-    '
+    ' &> /dev/null
     # Show completion instructions
-    sudo -H -u vagrant sh -c "echo alias ic=/usr/local/bin/ibmcloud >> ~/.bash_aliases"
+    sudo -H -u vagrant sh -c "echo alias ic=/usr/local/bin/ibmcloud > ~/.bash_aliases"
     echo "\n************************************"
     echo "If you have an IBM Cloud API key in ~/.bluemix/apiKey.json"
     echo "You can login with the following command:"
     echo "\n"
     echo "ibmcloud login -a https://cloud.ibm.com --apikey @~/.bluemix/apiKey.json -r us-south"
     echo "ibmcloud target --cf -o <your_org_here> -s dev"
-    echo "\n************************************"
-    # Show the GUI URL for Couch DB
-    echo "\n"
-    echo "CouchDB Admin GUI can be found at:\n"
-    echo "http://127.0.0.1:5984/_utils"    
+    echo "\n************************************" 
   SHELL
 
 end

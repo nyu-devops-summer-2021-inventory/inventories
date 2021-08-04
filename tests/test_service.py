@@ -267,14 +267,6 @@ class TestInventoryItemServer(unittest.TestCase):
         )
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_method_not_allowed_index(self):
-        """Ensure a 405 is returned if a non-GET request is sent to /"""
-        resp = self.app.delete(
-            "{0}/{1}".format("/", "fake_id"),
-            content_type=CONTENT_TYPE_JSON,
-        )
-        self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
-
     def test_unsupported_media_type(self):
         """Ensure a 415 is raised if an unsupported media type is used"""
         test_inventory_item = InventoryItemFactory()
