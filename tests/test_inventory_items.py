@@ -2,14 +2,11 @@
 
 """
 Test cases for InventoryItem Model
-
 Test cases can be run with:
     nosetests
     coverage report -m
-
 While debugging just these tests it's convinient to use this:
     nosetests --stop tests/test_inventory_items.py:TestInventoryItemModel
-
 """
 import os
 import logging

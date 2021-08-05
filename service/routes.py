@@ -16,7 +16,7 @@ from flask import jsonify, request, url_for, make_response, abort
 from flask_restx import Api, Resource, fields, reqparse, inputs
 from werkzeug.exceptions import NotFound
 
-from service.models import InventoryItem, Condition
+from service.models import InventoryItem, Condition, DataValidationError
 from . import status  # HTTP Status Codes
 
 # Import Flask application
@@ -110,24 +110,62 @@ inventory_item_args.add_argument(
 inventory_item_args.add_argument(
     "in_stock", type=inputs.boolean, required=False, help="List items by availability"
 )
-######################################################################
-# RETRIEVE AN INVENTORY ITEM
-######################################################################
-@app.route("/inventories/<int:inventory_item_id>", methods=["GET"])
-def get_inventory_items(inventory_item_id):
-    """
-    Retrieve an inventory item
 
-    This endpoint will return a inventory item based on the id specified in the path
+######################################################################
+# Special Error Handlers
+######################################################################
+@api.errorhandler(DataValidationError)
+def request_validation_error(error):
+    """Handles Value Errors from bad data"""
+    message = str(error)
+    app.logger.error(message)
+    return {
+        "status_code": status.HTTP_400_BAD_REQUEST,
+        "error": "Bad Request",
+        "message": message,
+    }, status.HTTP_400_BAD_REQUEST
+
+
+######################################################################
+#  PATH: /inventories/{id}
+######################################################################
+@api.route("/inventories/<inventory_item_id>")
+@api.param("inventory_item_id", "The Inventory Item identifier")
+class InventoryItemResource(Resource):
     """
-    app.logger.info("Request to Read a inventory item with id [%s]", inventory_item_id)
-    inventory_item = InventoryItem.find(inventory_item_id)
-    if not inventory_item:
-        raise NotFound(
-            "Inventory item with id '{}' was not found.".format(inventory_item_id)
+    InventoryItemResource class
+    Allows the manipulation of a single Inventory Item
+    GET /inventories{id} - Returns an inventory item with the id
+    PUT /inventories{id} - Update an inventory item with the id
+    DELETE /inventories{id} -  Deletes an inventory item with the id
+    """
+
+    ######################################################################
+    # RETRIEVE AN INVENTORY ITEM
+    ######################################################################
+    @api.doc("get_inventory_items")
+    @api.response(404, "Inventory item not found")
+    @api.marshal_with(inventory_item_model)
+    def get(self, inventory_item_id):
+        """
+        Retrieve an inventory item
+
+        This endpoint will return a inventory item based on the id specified in the path
+        """
+        app.logger.info(
+            "Request to Read a inventory item with id [%s]", inventory_item_id
         )
-    app.logger.info("Found item %s", inventory_item.serialize())
-    return make_response(jsonify(inventory_item.serialize()), status.HTTP_200_OK)
+        inventory_item = InventoryItem.find(inventory_item_id)
+        if not inventory_item:
+            abort(
+                status.HTTP_404_NOT_FOUND,
+                "Inventory item with id '{}' was not found.".format(inventory_item_id),
+            )
+        app.logger.info("Found item %s", inventory_item.serialize())
+        return inventory_item.serialize(), status.HTTP_200_OK
+
+    # TODO: Refactor the DELETE endpoint as a method of this class
+    # TODO: Refactor the UPDATE endpoint as a method of this class
 
 
 ######################################################################
@@ -273,3 +311,9 @@ def check_content_type(media_type):
         status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
         "Content-Type must be {}".format(media_type),
     )
+
+
+def abort(error_code: int, message: str):
+    """Logs errors before aborting"""
+    app.logger.error(message)
+    api.abort(error_code, message)
