@@ -25,10 +25,6 @@ from .factories import InventoryItemFactory
 # uncomment for debugging failing tests
 logging.disable(logging.CRITICAL)
 
-# DATABASE_URI = os.getenv('DATABASE_URI', 'sqlite:///../db/test.db')
-DATABASE_URI = os.getenv(
-    "DATABASE_URI", "postgres://postgres:postgres@localhost:5432/testdb"
-)
 BASE_URL = "/inventories"
 CONTENT_TYPE_JSON = "application/json"
 
@@ -44,8 +40,6 @@ class TestInventoryItemServer(unittest.TestCase):
         """Run once before all tests"""
         app.config["TESTING"] = True
         app.config["DEBUG"] = False
-        # Set up the test database
-        app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
         app.logger.setLevel(logging.CRITICAL)
         init_db(app)
 
