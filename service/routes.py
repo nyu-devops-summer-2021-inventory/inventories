@@ -191,32 +191,42 @@ def list_inventories():
     app.logger.info("Returning %d inventory items", len(results))
     return make_response(jsonify(results), status.HTTP_200_OK)
 
-
 ######################################################################
-# ADD A NEW INVENTORY ITEM
+#  PATH: /inventories
 ######################################################################
-@app.route("/inventories", methods=["POST"])
-def create_inventory_item():
-    """
-    Creates an Inventory item
-    This endpoint will create an Inventory item based the data in the body that is posted
-    """
-    app.logger.info(request.get_json())
-    app.logger.info("Request to create an inventory item")
-    check_content_type("application/json")
-    inventory_item = InventoryItem()
-    inventory_item.deserialize(request.get_json())
-    inventory_item.create()
-    message = inventory_item.serialize()
-    location_url = url_for(
-        "create_inventory_item", inventory_item_id=inventory_item.id, _external=True
-    )
+@api.route("/inventories", strict_slashes=False)
 
-    app.logger.info("Inventory item with ID [%s] created.", inventory_item.id)
-    return make_response(
+class InventoryItemCollection(Resource):
+    """ Handles all interactions with collections of InventoryItem """
+    ######################################################################
+    # ADD A NEW INVENTORY ITEM
+    ######################################################################
+    @api.doc('create_inventory_items')
+    @api.response(400, 'The posted data was not valid')
+    @api.expect(create_model)
+    @api.marshal_with(inventory_item_model, code=201)
+    def post(self):
+        """
+        Creates an Inventory item
+        This endpoint will create an Inventory item based the data in the body that is posted
+        """
+        app.logger.info(request.get_json())
+        app.logger.info("Request to create an inventory item")
+        check_content_type("application/json")
+        inventory_item = InventoryItem()
+        inventory_item.deserialize(request.get_json())
+        inventory_item.create()
+        message = inventory_item.serialize()
+        location_url = url_for(
+            "create_inventory_item", inventory_item_id=inventory_item.id, _external=True
+        )
+        app.logger.info("Inventory item with ID [%s] created.", inventory_item.id)
+        return make_response(
         jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
-    )
+        )
 
+    # TODO: Refactor the DELETE endpoint as a method of this class
+    # TODO: Refactor the LIST ALL endpoint as a method of this class
 
 ######################################################################
 # MARK AN ITEM AS IN-STOCK
