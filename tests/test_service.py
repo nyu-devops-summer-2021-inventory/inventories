@@ -16,7 +16,7 @@ import unittest
 
 from unittest.mock import patch
 from urllib.parse import quote_plus
-from service import status  # HTTP Status Codes
+from service import app, routes, status  # HTTP Status Codes
 from service.models import db, init_db, DataValidationError
 from service.routes import app
 from .factories import InventoryItemFactory
@@ -95,12 +95,12 @@ class TestInventoryItemServer(unittest.TestCase):
         """Get an Inventory item"""
         test_inventory_item = self._create_inventory_items(1)[0]
         resp = self.app.get(
-            "{}/{}".format(BASE_URL, test_inventory_item.id),
+            "/api{}/{}".format(BASE_URL, test_inventory_item.id),
             content_type=CONTENT_TYPE_JSON,
         )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
-        self.assertEqual(data["id"], test_inventory_item.id)
+        self.assertEqual(data["sku"], test_inventory_item.sku)
 
     def test_get_inventory_list(self):
         """Get a list of Inventory items"""
