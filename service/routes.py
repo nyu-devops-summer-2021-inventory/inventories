@@ -164,8 +164,26 @@ class InventoryItemResource(Resource):
         app.logger.info("Found item %s", inventory_item.serialize())
         return inventory_item.serialize(), status.HTTP_200_OK
 
-    # TODO: Refactor the DELETE endpoint as a method of this class
     # TODO: Refactor the UPDATE endpoint as a method of this class
+
+    @api.doc("delete_inventory_items")
+    @api.response(204, "Inventorty item deleted")
+    def delete(self, inventory_item_id):
+        """
+        Delete an Inventory Item
+        This endpoint will delete an Inventory item based the id specified in the path
+        """
+        app.logger.info(
+            "Request to Delete an Inventory item with id [%s]", inventory_item_id
+        )
+        inventory_item = InventoryItem.find(inventory_item_id)
+        if inventory_item:
+            inventory_item.delete()
+            app.logger.info(
+                "Inventory item with id [%s] was deleted", inventory_item_id
+            )
+
+        return "", status.HTTP_204_NO_CONTENT
 
 
 ######################################################################
@@ -265,7 +283,6 @@ class InventoryItemCollection(Resource):
             {"Location": location_url},
         )
 
-    # TODO: Refactor the DELETE endpoint as a method of this class
     # TODO: Refactor the LIST ALL endpoint as a method of this class
 
 
@@ -288,25 +305,6 @@ def update_in_stock(inventory_item_id):
         "Inventory item with ID [%s] marked as in-stock.", inventory_item.id
     )
     return make_response(jsonify(inventory_item.serialize()), status.HTTP_200_OK)
-
-
-######################################################################
-# DELETE AN INVENTORY ITEM
-######################################################################
-@app.route("/inventories/<int:inventory_item_id>", methods=["DELETE"])
-def delete_inventory_items(inventory_item_id):
-    """
-    Delete an inventory item
-
-    This endpoint will delete a InventoryItem based the id specified in the path
-    """
-    app.logger.info("Request to delete inventory item with id: %s", inventory_item_id)
-    inventory_item_id = InventoryItem.find(inventory_item_id)
-    if inventory_item_id:
-        inventory_item_id.delete()
-
-    app.logger.info("Finished deleting inventory item [%s]", inventory_item_id)
-    return make_response("", status.HTTP_204_NO_CONTENT)
 
 
 ######################################################################

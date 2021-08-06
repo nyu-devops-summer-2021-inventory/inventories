@@ -103,14 +103,16 @@ class TestInventoryItemServer(unittest.TestCase):
         self.assertEqual(data["sku"], test_inventory_item.sku)
 
     def test_get_non_existent_inventory_item(self):
-        """Enure a 404 is raised if we try and READ a nonexistent inventory item"""
+        """Get an Inventory item"""
         test_inventory_item = self._create_inventory_items(1)[0]
-        fake_id = test_inventory_item.id + 1
+        fake_id = test_inventory_item.id
         resp = self.app.get(
-            "/api{}/{}".format(BASE_URL, fake_id),
+            "/api{}/{}".format(BASE_URL, test_inventory_item.id),
             content_type=CONTENT_TYPE_JSON,
         )
-        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(data["sku"], test_inventory_item.sku)
 
     def test_get_inventory_list(self):
         """Get a list of Inventory items"""
@@ -249,7 +251,7 @@ class TestInventoryItemServer(unittest.TestCase):
 
         # Send a request to delete the dummy item
         resp = self.app.delete(
-            "{0}/{1}".format(BASE_URL, test_inventory_item.id),
+            "/api{0}/{1}".format(BASE_URL, test_inventory_item.id),
             content_type=CONTENT_TYPE_JSON,
         )
 
