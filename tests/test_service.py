@@ -103,16 +103,14 @@ class TestInventoryItemServer(unittest.TestCase):
         self.assertEqual(data["sku"], test_inventory_item.sku)
 
     def test_get_non_existent_inventory_item(self):
-        """Get an Inventory item"""
+        """Enure a 404 is raised if we try and READ a nonexistent inventory item"""
         test_inventory_item = self._create_inventory_items(1)[0]
-        fake_id = test_inventory_item.id
+        fake_id = test_inventory_item.id + 1
         resp = self.app.get(
-            "/api{}/{}".format(BASE_URL, test_inventory_item.id),
+            "/api{}/{}".format(BASE_URL, fake_id),
             content_type=CONTENT_TYPE_JSON,
         )
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        data = resp.get_json()
-        self.assertEqual(data["sku"], test_inventory_item.sku)
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_get_inventory_list(self):
         """Get a list of Inventory items"""
