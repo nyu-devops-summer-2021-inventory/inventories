@@ -59,7 +59,7 @@ $(function () {
 
         var ajax = $.ajax({
             type: "POST",
-            url: "/inventories",
+            url: "/api/inventories",
             contentType: "application/json",
             data: JSON.stringify(data),
         });

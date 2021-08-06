@@ -42,7 +42,7 @@ def step_impl(context):
         expect(context.resp.status_code).to_equal(204)
 
     # load the database with new pets
-    create_url = context.base_url + "/inventories"
+    create_url = context.base_url + "/api/inventories"
     for row in context.table:
         data = {
             "sku": row["sku"],
