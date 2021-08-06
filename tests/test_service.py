@@ -70,7 +70,7 @@ class TestInventoryItemServer(unittest.TestCase):
         for _ in range(count):
             test_inventory_item = InventoryItemFactory()
             resp = self.app.post(
-                BASE_URL,
+                f"/api{BASE_URL}",
                 json=test_inventory_item.serialize(),
                 content_type=CONTENT_TYPE_JSON,
             )
@@ -102,6 +102,16 @@ class TestInventoryItemServer(unittest.TestCase):
         data = resp.get_json()
         self.assertEqual(data["sku"], test_inventory_item.sku)
 
+    def test_get_non_existent_inventory_item(self):
+        """Enure a 404 is raised if we try and READ a nonexistent inventory item"""
+        test_inventory_item = self._create_inventory_items(1)[0]
+        fake_id = test_inventory_item.id + 1
+        resp = self.app.get(
+            "/api{}/{}".format(BASE_URL, fake_id),
+            content_type=CONTENT_TYPE_JSON,
+        )
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
     def test_get_inventory_list(self):
         """Get a list of Inventory items"""
         self._create_inventory_items(5)
@@ -115,7 +125,7 @@ class TestInventoryItemServer(unittest.TestCase):
         test_inventory_item = InventoryItemFactory()
         logging.debug(test_inventory_item)
         resp = self.app.post(
-            BASE_URL,
+            f"/api{BASE_URL}",
             json=test_inventory_item.serialize(),
             content_type=CONTENT_TYPE_JSON,
         )
@@ -141,14 +151,16 @@ class TestInventoryItemServer(unittest.TestCase):
         )
 
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        # go back and get it again, need query function
-        # TODO: uncomment the codes below after query function is finished
-        # resp = self.app.get(
-        #     '{}/{}'.format(BASE_URL, test_inventory_item.id),
-        #     content_type=CONTENT_TYPE_JSON)
-        # self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+        resp = self.app.get(
+            "/api{}/{}".format(BASE_URL, test_inventory_item.id),
+            content_type=CONTENT_TYPE_JSON,
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
         updated_inventory_item = resp.get_json()
         logging.debug("data = %s", updated_inventory_item)
+
         self.assertEqual(
             updated_inventory_item["id"], test_inventory_item.id, "ids do not match"
         )
@@ -212,7 +224,7 @@ class TestInventoryItemServer(unittest.TestCase):
         test_inventory_item = InventoryItemFactory()
         test_inventory_item.in_stock = False
         resp = self.app.post(
-            BASE_URL,
+            f"/api{BASE_URL}",
             json=test_inventory_item.serialize(),
             content_type=CONTENT_TYPE_JSON,
         )
@@ -253,7 +265,7 @@ class TestInventoryItemServer(unittest.TestCase):
         bad_request_mock.side_effect = DataValidationError()
         test_inventory_item = InventoryItemFactory()
         resp = self.app.post(
-            BASE_URL,
+            f"/api{BASE_URL}",
             json=test_inventory_item.serialize(),
             content_type=CONTENT_TYPE_JSON,
         )
@@ -266,16 +278,6 @@ class TestInventoryItemServer(unittest.TestCase):
             content_type=CONTENT_TYPE_JSON,
         )
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
-
-    def test_unsupported_media_type(self):
-        """Ensure a 415 is raised if an unsupported media type is used"""
-        test_inventory_item = InventoryItemFactory()
-        resp = self.app.post(
-            BASE_URL,
-            json=test_inventory_item.serialize(),
-            content_type="bad_media_type",
-        )
-        self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
     def test_find_inventory_items_by_sku(self):
         """Query Inventory Items by SKU"""
