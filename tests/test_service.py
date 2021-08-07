@@ -249,7 +249,7 @@ class TestInventoryItemServer(unittest.TestCase):
 
         # Send a request to delete the dummy item
         resp = self.app.delete(
-            "{0}/{1}".format(BASE_URL, test_inventory_item.id),
+            "/api{0}/{1}".format(BASE_URL, test_inventory_item.id),
             content_type=CONTENT_TYPE_JSON,
         )
 

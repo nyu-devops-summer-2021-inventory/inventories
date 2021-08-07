@@ -37,7 +37,7 @@ def step_impl(context):
     expect(context.resp.status_code).to_equal(200)
     for item in context.resp.json():
         context.resp = requests.delete(
-            context.base_url + "/inventories/" + str(item["id"]), headers=headers
+            context.base_url + "/api/inventories/" + str(item["id"]), headers=headers
         )
         expect(context.resp.status_code).to_equal(204)
 
