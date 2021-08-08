@@ -289,22 +289,29 @@ class InventoryItemCollection(Resource):
 ######################################################################
 # MARK AN ITEM AS IN-STOCK
 ######################################################################
-@app.route("/inventories/<int:inventory_item_id>/in-stock", methods=["PUT"])
-def update_in_stock(inventory_item_id):
-    """Update an inventory item to be in-stock based on the provided ID"""
-    app.logger.info("Request update inventory item %s to in-stock", inventory_item_id)
-    check_content_type("application/json")
-    inventory_item = InventoryItem.find(inventory_item_id)
-    app.logger.info("Found inventory item %s", inventory_item_id)
-    if not inventory_item:
-        raise NotFound(inventory_item_id)
-    inventory_item.in_stock = True
-    inventory_item.update()
+@api.route('/inventories/<inventory_item_id>/in-stock')
+@api.param('inventory_item_id', 'The Item identifier')
+class InStockResource(Resource):
+    """ In-stock actions on an item """
+    @api.doc('in-stock')
+    @api.response(404, 'Item not found')
+    @api.response(409, 'The Item is not available')
+    def put(self, inventory_item_id):
+        """
+        Update status of an item to in-stock
 
-    app.logger.info(
-        "Inventory item with ID [%s] marked as in-stock.", inventory_item.id
-    )
-    return make_response(jsonify(inventory_item.serialize()), status.HTTP_200_OK)
+        This endpoint will update status of an item to in-stock
+        """
+        app.logger.info('Update status of an item to in-stock')
+        inventory_item = InventoryItem.find(inventory_item_id)
+        if not inventory_item:
+            abort(status.HTTP_404_NOT_FOUND, 'Item with id [{}] was not found.'.format(inventory_item_id))
+        if not inventory_item.available:
+            abort(status.HTTP_409_CONFLICT, 'Pet with id [{}] is not available.'.format(inventory_item_id))
+        inventory_item.in_stock = True
+        inventory_item.update()
+        app.logger.info('Item with id [%s] is in-stock!!', inventory_item.id)
+        return inventory_item.serialize(), status.HTTP_200_OK
 
 
 ######################################################################
