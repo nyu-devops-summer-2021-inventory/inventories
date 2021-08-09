@@ -145,7 +145,7 @@ class TestInventoryItemServer(unittest.TestCase):
         test_inventory_item = self._create_inventory_items(1)[0]
         # make the call
         resp = self.app.put(
-            "{}/{}".format(BASE_URL, test_inventory_item.id),
+            "/api{}/{}".format(BASE_URL, test_inventory_item.id),
             json=test_inventory_item.serialize(),
             content_type=CONTENT_TYPE_JSON,
         )
@@ -200,7 +200,7 @@ class TestInventoryItemServer(unittest.TestCase):
         del test_inventory_item["sku"]
         # make the call
         resp = self.app.put(
-            "{}/{}".format(BASE_URL, test_inventory_item["id"]),
+            "/api{}/{}".format(BASE_URL, test_inventory_item["id"]),
             json=test_inventory_item,
             content_type=CONTENT_TYPE_JSON,
         )
@@ -212,7 +212,7 @@ class TestInventoryItemServer(unittest.TestCase):
         test_inventory_item = self._create_inventory_items(1)[0]
         # make the call
         resp = self.app.put(
-            "{}/{}".format(BASE_URL, test_inventory_item.id - 111111111),
+            "/api{}/{}".format(BASE_URL, test_inventory_item.id - 111111111),
             json=test_inventory_item.serialize(),
             content_type=CONTENT_TYPE_JSON,
         )
@@ -234,7 +234,7 @@ class TestInventoryItemServer(unittest.TestCase):
         new_inventory_item = resp.get_json()
         logging.debug(new_inventory_item)
         resp = self.app.put(
-            "/inventories/{}/in-stock".format(new_inventory_item["id"]),
+            "/api/inventories/{}/in-stock".format(new_inventory_item["id"]),
             json=new_inventory_item,
             content_type=CONTENT_TYPE_JSON,
         )
@@ -274,7 +274,7 @@ class TestInventoryItemServer(unittest.TestCase):
     def test_delete_unknown_item(self):
         """Ensure a 404 is returned if a DELETE is sent for a nonexistant item"""
         resp = self.app.delete(
-            "{0}/{1}".format(BASE_URL, "fake_id"),
+            "/api{0}/{1}".format(BASE_URL, "fake_id"),
             content_type=CONTENT_TYPE_JSON,
         )
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
