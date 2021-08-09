@@ -289,7 +289,7 @@ class InventoryItemCollection(Resource):
 ######################################################################
 # MARK AN ITEM AS IN-STOCK
 ######################################################################
-@api.route('/inventories/<inventory_item_id>/in-stock')
+@api.route('/api/inventories/<inventory_item_id>/in-stock')
 @api.param('inventory_item_id', 'The Item identifier')
 class InStockResource(Resource):
     """ In-stock actions on an item """
