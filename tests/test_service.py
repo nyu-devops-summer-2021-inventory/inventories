@@ -220,7 +220,7 @@ class TestInventoryItemServer(unittest.TestCase):
 
     def test_update_in_stock(self):
         """Update in stock status for an inventory item"""
-        # TODO: create an inventory to update
+        # create an inventory to update
         test_inventory_item = InventoryItemFactory()
         test_inventory_item.in_stock = False
         resp = self.app.post(
@@ -234,7 +234,7 @@ class TestInventoryItemServer(unittest.TestCase):
         new_inventory_item = resp.get_json()
         logging.debug(new_inventory_item)
         resp = self.app.put(
-            "/api/inventories/{}/in-stock".format(new_inventory_item["id"]),
+            "/inventories/{}/in-stock".format(new_inventory_item["id"]),
             json=new_inventory_item,
             content_type=CONTENT_TYPE_JSON,
         )
@@ -274,7 +274,7 @@ class TestInventoryItemServer(unittest.TestCase):
     def test_delete_unknown_item(self):
         """Ensure a 404 is returned if a DELETE is sent for a nonexistant item"""
         resp = self.app.delete(
-            "/api{0}/{1}".format(BASE_URL, "fake_id"),
+            "/api{0}/{1}".format(BASE_URL, -111), # -111 is a fake id
             content_type=CONTENT_TYPE_JSON,
         )
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
