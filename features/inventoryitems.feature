@@ -107,6 +107,7 @@ Scenario: Use In-Stock Action
     And I should see "5" in the "Restock_Amount" field
     And I should see "True" in the "In_Stock" dropdown
 
+
 Scenario: Update an Item
     When I visit the "Home Page"
     And I set the "SKU" to "ABCD"
@@ -115,11 +116,11 @@ Scenario: Update an Item
     And I should see "New" in the "Condition" field
     
     When I change "SKU" to "LMAO"
+    And I copy the "ID" field
     And I press the "Update" button
     Then I should see the message "Success"
     
-    When I copy the "ID" field
-    And I press the "Clear" button
+    When I press the "Clear" button
     And I paste the "ID" field
     And I press the "Retrieve" button
     Then I should see "LMAO" in the "SKU" field
