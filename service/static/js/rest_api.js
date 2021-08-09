@@ -102,7 +102,7 @@ $(function () {
 
         var ajax = $.ajax({
                 type: "PUT",
-                url: "/inventories/" + inventory_item_id,
+                url: "/api/inventories/" + inventory_item_id,
                 contentType: "application/json",
                 data: JSON.stringify(data)
             })
