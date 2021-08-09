@@ -289,7 +289,7 @@ class InventoryItemCollection(Resource):
 ######################################################################
 # MARK AN ITEM AS IN-STOCK
 ######################################################################
-@api.route('/api/inventories/<inventory_item_id>/in-stock')
+@api.route('/inventories/<inventory_item_id>/in-stock')
 @api.param('inventory_item_id', 'The Item identifier')
 class InStockResource(Resource):
     """ In-stock actions on an item """
@@ -335,3 +335,14 @@ def abort(error_code: int, message: str):
     """Logs errors before aborting"""
     app.logger.error(message)
     api.abort(error_code, message)
+
+@app.before_first_request
+def init_db(dbname="inventories"):
+    """ Initlaize the model """
+    InventoryItem.init_db(dbname)
+
+# load sample data
+def data_load(payload):
+    """ Loads an inventory item into the database """
+    inventories = InventoryItem(payload['sku'], payload['count'], payload['condition'],payload['restock_level'],payload['restock_amount'],payload['in_stock'])
+    inventories.create()
