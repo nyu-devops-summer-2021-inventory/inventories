@@ -289,28 +289,29 @@ class InventoryItemCollection(Resource):
 ######################################################################
 # MARK AN ITEM AS IN-STOCK
 ######################################################################
-@api.route('/inventories/<inventory_item_id>/in-stock')
-@api.param('inventory_item_id', 'The Item identifier')
+@api.route("/inventories/<inventory_item_id>/in-stock")
+@api.param("inventory_item_id", "The Item identifier")
 class InStockResource(Resource):
-    """ In-stock actions on an item """
-    @api.doc('in-stock')
-    @api.response(404, 'Item not found')
-    @api.response(409, 'The Item is not available')
+    """In-stock actions on an item"""
+
+    @api.doc("in-stock")
+    @api.response(404, "Item not found")
     def put(self, inventory_item_id):
         """
         Update status of an item to in-stock
 
         This endpoint will update status of an item to in-stock
         """
-        app.logger.info('Update status of an item to in-stock')
+        app.logger.info("Update status of an item to in-stock")
         inventory_item = InventoryItem.find(inventory_item_id)
         if not inventory_item:
-            abort(status.HTTP_404_NOT_FOUND, 'Item with id [{}] was not found.'.format(inventory_item_id))
-        if not inventory_item.available:
-            abort(status.HTTP_409_CONFLICT, 'Pet with id [{}] is not available.'.format(inventory_item_id))
+            abort(
+                status.HTTP_404_NOT_FOUND,
+                "Item with id [{}] was not found.".format(inventory_item_id),
+            )
         inventory_item.in_stock = True
         inventory_item.update()
-        app.logger.info('Item with id [%s] is in-stock!!', inventory_item.id)
+        app.logger.info("Item with id [%s] is in-stock!!", inventory_item.id)
         return inventory_item.serialize(), status.HTTP_200_OK
 
 
@@ -335,14 +336,3 @@ def abort(error_code: int, message: str):
     """Logs errors before aborting"""
     app.logger.error(message)
     api.abort(error_code, message)
-
-@app.before_first_request
-def init_db(dbname="inventories"):
-    """ Initlaize the model """
-    InventoryItem.init_db(dbname)
-
-# load sample data
-def data_load(payload):
-    """ Loads an inventory item into the database """
-    inventories = InventoryItem(payload['sku'], payload['count'], payload['condition'],payload['restock_level'],payload['restock_amount'],payload['in_stock'])
-    inventories.create()
