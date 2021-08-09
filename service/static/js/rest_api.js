@@ -27,6 +27,8 @@ $(function () {
         $("#inventory_item_restock_level").val("");
         $("#inventory_item_restock_amount").val("");
         $("#inventory_item_in_stock").val("");
+
+        $("#flash_message").empty();
     }
 
     // Updates the flash message area
