@@ -25,7 +25,6 @@ from .factories import InventoryItemFactory
 # uncomment for debugging failing tests
 logging.disable(logging.CRITICAL)
 
-# DATABASE_URI = os.getenv('DATABASE_URI', 'sqlite:///../db/test.db')
 DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgres://postgres:postgres@localhost:5432/testdb"
 )
@@ -234,7 +233,7 @@ class TestInventoryItemServer(unittest.TestCase):
         new_inventory_item = resp.get_json()
         logging.debug(new_inventory_item)
         resp = self.app.put(
-            "/inventories/{}/in-stock".format(new_inventory_item["id"]),
+            "/api/inventories/{}/in-stock".format(new_inventory_item["id"]),
             json=new_inventory_item,
             content_type=CONTENT_TYPE_JSON,
         )
