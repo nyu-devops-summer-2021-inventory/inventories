@@ -5,12 +5,12 @@ Inventory Service
 Paths:
 ------
 GET / - return a homepage of the inventory system
+POST /inventories - Creates an Inventory item
 GET /inventories - Returns a list all of the Inventory items
 GET /inventories/{id} - Retrieve an inventory item based on id
 PUT /inventories/{id} - updates an inventory item record in the database
-PUT /inventories/{ID}/in-stock - update the in_stock attribute of Inventory model to True
-PUT /inventories/{ID}/out-of-stock - update the in_stock attribute of Inventory model to False
 DELETE /inventories/{id} - deletes an inventory item record in the database
+PUT /inventories/{ID}/in-stock - update the in_stock attribute of Inventory model to True
 """
 from flask import jsonify, request, url_for, make_response, abort
 from flask_restx import Api, Resource, fields, reqparse, inputs
@@ -140,9 +140,9 @@ class InventoryItemResource(Resource):
     DELETE /inventories{id} -  Deletes an inventory item with the id
     """
 
-    ######################################################################
+    # ---------------------------------------------------------------------
     # RETRIEVE AN INVENTORY ITEM
-    ######################################################################
+    # ---------------------------------------------------------------------
     @api.doc("get_inventory_items")
     @api.response(404, "Inventory item not found")
     @api.marshal_with(inventory_item_model)
@@ -164,8 +164,42 @@ class InventoryItemResource(Resource):
         app.logger.info("Found item %s", inventory_item.serialize())
         return inventory_item.serialize(), status.HTTP_200_OK
 
-    # TODO: Refactor the UPDATE endpoint as a method of this class
+    # ---------------------------------------------------------------------
+    # UPDATE AN EXISTING INVENTORY ITEM
+    # ---------------------------------------------------------------------
+    @api.doc("update_inventory_items")
+    @api.response(404, "Inventory Item not found")
+    @api.response(400, "The posted Inventory Item data was not valid")
+    @api.expect(inventory_item_model)
+    @api.marshal_with(inventory_item_model)
+    def put(self, inventory_item_id):
+        """
+        Update an inventory item
+        This endpoint will update a InventoryItem based the id specified in the path
+        """
+        app.logger.info(
+            "Request to Update a inventory item with id [%s]", inventory_item_id
+        )
+        check_content_type("application/json")
+        inventory_item = InventoryItem.find(inventory_item_id)
+        if not inventory_item:
+            raise NotFound(
+                "Inventory item with id '{}' was not found.".format(inventory_item_id)
+            )
 
+        data = request.get_json()
+        app.logger.info(data)
+        inventory_item.deserialize(data)
+        inventory_item.id = inventory_item_id
+        inventory_item.update()
+        app.logger.info(
+            "Inventory item with id [%s] was updated successfully.", inventory_item.id
+        )
+        return make_response(jsonify(inventory_item.serialize()), status.HTTP_200_OK)
+
+    # ---------------------------------------------------------------------
+    # DELETE AN EXISTING INVENTORY ITEM
+    # ---------------------------------------------------------------------
     @api.doc("delete_inventory_items")
     @api.response(204, "Inventorty item deleted")
     def delete(self, inventory_item_id):
@@ -182,38 +216,7 @@ class InventoryItemResource(Resource):
             app.logger.info(
                 "Inventory item with id [%s] was deleted", inventory_item_id
             )
-
         return "", status.HTTP_204_NO_CONTENT
-
-
-######################################################################
-# UPDATE AN EXISTING INVENTORY ITEM
-######################################################################
-@app.route("/inventories/<int:inventory_item_id>", methods=["PUT"])
-def update_inventory_items(inventory_item_id):
-    """
-    Update an inventory item
-    This endpoint will update a InventoryItem based the id specified in the path
-    """
-    app.logger.info(
-        "Request to Update a inventory item with id [%s]", inventory_item_id
-    )
-    check_content_type("application/json")
-    inventory_item = InventoryItem.find(inventory_item_id)
-    if not inventory_item:
-        raise NotFound(
-            "Inventory item with id '{}' was not found.".format(inventory_item_id)
-        )
-
-    data = request.get_json()
-    app.logger.info(data)
-    inventory_item.deserialize(data)
-    inventory_item.id = inventory_item_id
-    inventory_item.update()
-    app.logger.info(
-        "Inventory item with id [%s] was updated successfully.", inventory_item.id
-    )
-    return make_response(jsonify(inventory_item.serialize()), status.HTTP_200_OK)
 
 
 ######################################################################
@@ -255,9 +258,9 @@ def list_inventories():
 class InventoryItemCollection(Resource):
     """Handles all interactions with collections of InventoryItem"""
 
-    ######################################################################
+    # ---------------------------------------------------------------------
     # ADD A NEW INVENTORY ITEM
-    ######################################################################
+    # ---------------------------------------------------------------------
     @api.doc("create_inventory_items")
     @api.response(400, "The posted data was not valid")
     @api.expect(create_model)

@@ -9,7 +9,7 @@ Vagrant.configure(2) do |config|
   config.vm.hostname = "ubuntu"
 
   # Configure IP address and port forwarding
-  config.vm.network "forwarded_port", guest: 5000, host: 5000, host_ip: "127.0.0.1"
+  config.vm.network "forwarded_port", guest: 8080, host: 8080, host_ip: "127.0.0.1"
   config.vm.network "private_network", ip: "192.168.33.10"
 
   # No windows users currently on the team

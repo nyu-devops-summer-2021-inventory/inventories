@@ -144,7 +144,7 @@ class TestInventoryItemServer(unittest.TestCase):
         test_inventory_item = self._create_inventory_items(1)[0]
         # make the call
         resp = self.app.put(
-            "{}/{}".format(BASE_URL, test_inventory_item.id),
+            "/api{}/{}".format(BASE_URL, test_inventory_item.id),
             json=test_inventory_item.serialize(),
             content_type=CONTENT_TYPE_JSON,
         )
@@ -199,7 +199,7 @@ class TestInventoryItemServer(unittest.TestCase):
         del test_inventory_item["sku"]
         # make the call
         resp = self.app.put(
-            "{}/{}".format(BASE_URL, test_inventory_item["id"]),
+            "/api{}/{}".format(BASE_URL, test_inventory_item["id"]),
             json=test_inventory_item,
             content_type=CONTENT_TYPE_JSON,
         )
@@ -211,7 +211,7 @@ class TestInventoryItemServer(unittest.TestCase):
         test_inventory_item = self._create_inventory_items(1)[0]
         # make the call
         resp = self.app.put(
-            "{}/{}".format(BASE_URL, test_inventory_item.id - 111111111),
+            "/api{}/{}".format(BASE_URL, test_inventory_item.id - 111111111),
             json=test_inventory_item.serialize(),
             content_type=CONTENT_TYPE_JSON,
         )
@@ -219,7 +219,7 @@ class TestInventoryItemServer(unittest.TestCase):
 
     def test_update_in_stock(self):
         """Update in stock status for an inventory item"""
-        # TODO: create an inventory to update
+        # create an inventory to update
         test_inventory_item = InventoryItemFactory()
         test_inventory_item.in_stock = False
         resp = self.app.post(
@@ -271,12 +271,12 @@ class TestInventoryItemServer(unittest.TestCase):
         self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_delete_unknown_item(self):
-        """Ensure a 404 is returned if a DELETE is sent for a nonexistant item"""
+        """Ensure a 204 is returned if a DELETE is sent for a nonexistant item"""
         resp = self.app.delete(
-            "{0}/{1}".format(BASE_URL, "fake_id"),
+            "/api{0}/{1}".format(BASE_URL, -111),  # -111 is a fake id
             content_type=CONTENT_TYPE_JSON,
         )
-        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_find_inventory_items_by_sku(self):
         """Query Inventory Items by SKU"""
