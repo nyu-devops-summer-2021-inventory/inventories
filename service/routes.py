@@ -140,9 +140,9 @@ class InventoryItemResource(Resource):
     DELETE /inventories{id} -  Deletes an inventory item with the id
     """
 
-    #---------------------------------------------------------------------
+    # ---------------------------------------------------------------------
     # RETRIEVE AN INVENTORY ITEM
-    #---------------------------------------------------------------------
+    # ---------------------------------------------------------------------
     @api.doc("get_inventory_items")
     @api.response(404, "Inventory item not found")
     @api.marshal_with(inventory_item_model)
@@ -164,13 +164,12 @@ class InventoryItemResource(Resource):
         app.logger.info("Found item %s", inventory_item.serialize())
         return inventory_item.serialize(), status.HTTP_200_OK
 
-    
-    #---------------------------------------------------------------------
+    # ---------------------------------------------------------------------
     # UPDATE AN EXISTING INVENTORY ITEM
-    #---------------------------------------------------------------------
-    @api.doc('update_inventory_items')
-    @api.response(404, 'Inventory Item not found')
-    @api.response(400, 'The posted Inventory Item data was not valid')
+    # ---------------------------------------------------------------------
+    @api.doc("update_inventory_items")
+    @api.response(404, "Inventory Item not found")
+    @api.response(400, "The posted Inventory Item data was not valid")
     @api.expect(inventory_item_model)
     @api.marshal_with(inventory_item_model)
     def put(self, inventory_item_id):
@@ -198,9 +197,9 @@ class InventoryItemResource(Resource):
         )
         return make_response(jsonify(inventory_item.serialize()), status.HTTP_200_OK)
 
-    #---------------------------------------------------------------------
+    # ---------------------------------------------------------------------
     # DELETE AN EXISTING INVENTORY ITEM
-    #---------------------------------------------------------------------
+    # ---------------------------------------------------------------------
     @api.doc("delete_inventory_items")
     @api.response(204, "Inventorty item deleted")
     def delete(self, inventory_item_id):
@@ -218,7 +217,6 @@ class InventoryItemResource(Resource):
                 "Inventory item with id [%s] was deleted", inventory_item_id
             )
         return "", status.HTTP_204_NO_CONTENT
-
 
 
 ######################################################################
@@ -260,9 +258,9 @@ def list_inventories():
 class InventoryItemCollection(Resource):
     """Handles all interactions with collections of InventoryItem"""
 
-    #---------------------------------------------------------------------
+    # ---------------------------------------------------------------------
     # ADD A NEW INVENTORY ITEM
-    #---------------------------------------------------------------------
+    # ---------------------------------------------------------------------
     @api.doc("create_inventory_items")
     @api.response(400, "The posted data was not valid")
     @api.expect(create_model)

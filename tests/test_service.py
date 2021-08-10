@@ -273,7 +273,7 @@ class TestInventoryItemServer(unittest.TestCase):
     def test_delete_unknown_item(self):
         """Ensure a 204 is returned if a DELETE is sent for a nonexistant item"""
         resp = self.app.delete(
-            "/api{0}/{1}".format(BASE_URL, -111), # -111 is a fake id
+            "/api{0}/{1}".format(BASE_URL, -111),  # -111 is a fake id
             content_type=CONTENT_TYPE_JSON,
         )
         self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
