@@ -271,12 +271,12 @@ class TestInventoryItemServer(unittest.TestCase):
         self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_delete_unknown_item(self):
-        """Ensure a 404 is returned if a DELETE is sent for a nonexistant item"""
+        """Ensure a 204 is returned if a DELETE is sent for a nonexistant item"""
         resp = self.app.delete(
             "/api{0}/{1}".format(BASE_URL, -111), # -111 is a fake id
             content_type=CONTENT_TYPE_JSON,
         )
-        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_find_inventory_items_by_sku(self):
         """Query Inventory Items by SKU"""

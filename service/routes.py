@@ -217,10 +217,7 @@ class InventoryItemResource(Resource):
             app.logger.info(
                 "Inventory item with id [%s] was deleted", inventory_item_id
             )
-            return "", status.HTTP_204_NO_CONTENT
-        # a 404 is returned if a DELETE is sent for a nonexistant item
-        return "", status.HTTP_404_NOT_FOUND
-
+        return "", status.HTTP_204_NO_CONTENT
 
 
 
