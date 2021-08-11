@@ -266,8 +266,7 @@ $(function () {
 
         var ajax = $.ajax({
             type: "GET",
-            url: "/inventories?" + queryString,
-            contentType: "application/json",
+            url: "/api/inventories?" + queryString,
             data: ''
         })
 

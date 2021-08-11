@@ -33,7 +33,7 @@ def step_impl(context):
     """Delete all Pets and load new ones"""
     headers = {"Content-Type": "application/json"}
     # list all of the pets and delete them one by one
-    context.resp = requests.get(context.base_url + "/inventories", headers=headers)
+    context.resp = requests.get(context.base_url + "/api/inventories")
     expect(context.resp.status_code).to_equal(200)
     for item in context.resp.json():
         context.resp = requests.delete(
