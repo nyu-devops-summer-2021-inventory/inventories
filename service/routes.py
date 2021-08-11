@@ -259,10 +259,10 @@ class InventoryItemCollection(Resource):
 
         results = [item.serialize() for item in inventory_items]
         app.logger.info("Returning %d inventory items", len(results))
-        return results, status.HTTP_200_OK)
+        return results, status.HTTP_200_OK
 
 
-        
+
     # ---------------------------------------------------------------------
     # ADD A NEW INVENTORY ITEM
     # ---------------------------------------------------------------------
