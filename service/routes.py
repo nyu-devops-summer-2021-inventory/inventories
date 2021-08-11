@@ -96,16 +96,7 @@ inventory_item_args.add_argument(
     "sku", type=str, required=False, help="List items by SKU"
 )
 inventory_item_args.add_argument(
-    "count", type=int, required=False, help="List items by count"
-)
-inventory_item_args.add_argument(
     "condition", type=str, required=False, help="List items by condition"
-)
-inventory_item_args.add_argument(
-    "restock_level", type=int, required=False, help="List items by restock_level"
-)
-inventory_item_args.add_argument(
-    "restock_amount", type=int, required=False, help="List items by restock_amount"
 )
 inventory_item_args.add_argument(
     "in_stock", type=inputs.boolean, required=False, help="List items by availability"
@@ -253,9 +244,7 @@ class InventoryItemCollection(Resource):
                     getattr(Condition, args["condition"])
                 )
             except AttributeError as error:
-                raise DataValidationError(
-                    f"Invalid condition: {args['condition']}"
-                )
+                raise DataValidationError(f"Invalid condition: {args['condition']}")
 
         # If a user provies an in-stock paramter, filter by that
         # This is a boolean value, so we need to explictly evaluate it it's not
