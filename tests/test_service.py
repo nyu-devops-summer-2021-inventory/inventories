@@ -232,7 +232,7 @@ class TestInventoryItemServer(unittest.TestCase):
     def test_update_item_bad_data(self):
         """Ensure a 400 is returned if we try and update an item with bad data"""
         test_inventory_item = self._create_inventory_items(1)[0].serialize()
-        test_inventory_item["count"] = "a"
+        test_inventory_item["condition"] = "FooBar"
         resp = self.app.put(
             "/api{}/{}".format(BASE_URL, test_inventory_item["id"]),
             json=test_inventory_item,
