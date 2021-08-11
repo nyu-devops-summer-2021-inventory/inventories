@@ -335,6 +335,15 @@ class TestInventoryItemServer(unittest.TestCase):
         for item in data:
             self.assertEqual(item["condition"], test_condition.name)
 
+    def test_find_inventory_items_with_invalid_condition(self):
+        """Ensure a 400 is returned if we query for a non-existent condition"""
+        inventory_items = self._create_inventory_items(10)
+        resp = self.app.get(
+            "/api{0}".format(BASE_URL),
+            query_string="condition={}".format(quote_plus("FakeCondition")),
+        )
+        self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+
     def test_find_inventory_items_by_in_stock(self):
         """Query Inventory Items by in stock status"""
         inventory_items = self._create_inventory_items(10)
