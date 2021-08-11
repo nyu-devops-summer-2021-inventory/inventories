@@ -14,8 +14,6 @@ from typing import Dict, Union
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
-from psycopg2.errors import InvalidTextRepresentation
-
 logger = logging.getLogger("flask.app")
 
 # Create the SQLAlchemy object to be initialized later in init_db()
