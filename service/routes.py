@@ -232,7 +232,7 @@ class InventoryItemCollection(Resource):
     @api.doc('list_inventory_items')
     @api.expect(inventory_item_args, validate=True)
     @api.marshal_list_with(inventory_item_model)
-    def list_inventories(self):
+    def get(self):
         """Returns all of the InventoryItem objects"""
         app.logger.info("Request for inventory list %s", request.args)
         inventory_items = []
