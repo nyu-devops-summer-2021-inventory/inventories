@@ -248,9 +248,14 @@ class InventoryItemCollection(Resource):
         # If a user provides a condition parameter, filter by that
         elif args["condition"]:
             app.logger.info("Filtering by condition: %s", args["condition"])
-            inventory_items = InventoryItem.find_by_condition(
-                getattr(Condition, args["condition"])
-            )
+            try:
+                inventory_items = InventoryItem.find_by_condition(
+                    getattr(Condition, args["condition"])
+                )
+            except AttributeError as error:
+                raise DataValidationError(
+                    f"Invalid condition: {args['condition']}"
+                )
 
         # If a user provies an in-stock paramter, filter by that
         # This is a boolean value, so we need to explictly evaluate it it's not
