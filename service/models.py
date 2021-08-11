@@ -14,6 +14,8 @@ from typing import Dict, Union
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
+from psycopg2.errors import InvalidTextRepresentation
+
 logger = logging.getLogger("flask.app")
 
 # Create the SQLAlchemy object to be initialized later in init_db()
@@ -99,18 +101,22 @@ class InventoryItem(db.Model):
         """Deserialize an inventory item from a dictionary"""
         try:
             self.sku = data["sku"]
-            self.count = data["count"]
+            self.count = int(data["count"])
             self.condition = getattr(Condition, data["condition"])
-            self.restock_level = data["restock_level"]
-            self.restock_amount = data["restock_amount"]
-            self.in_stock = data["in_stock"]
+            self.restock_level = int(data["restock_level"])
+            self.restock_amount = int(data["restock_amount"])
+            self.in_stock = bool(data["in_stock"])
         except KeyError as error:
             raise DataValidationError(
                 f"Invalid inventory item: missing {error.args[0]}"
             )
-        except TypeError as error:
+        except (TypeError, ValueError) as error:
             raise DataValidationError(
                 "Invalid inventory item: request contained bad or no data"
+            )
+        except AttributeError as error:
+            raise DataValidationError(
+                f"Invalid condition for inventory item: {data['condition']}"
             )
         return self
 

@@ -138,6 +138,18 @@ class TestInventoryItemServer(unittest.TestCase):
             new_inventory_item["sku"], test_inventory_item.sku, "Names do not match"
         )
 
+    def test_create_inventory_item_bad_data(self):
+        """Ensure a 400 is returned if an inventory item is created with bad data"""
+        test_inventory_item = InventoryItemFactory()
+        test_inventory_item.count = "b"
+        logging.debug(test_inventory_item)
+        resp = self.app.post(
+            f"/api{BASE_URL}",
+            json=test_inventory_item.serialize(),
+            content_type=CONTENT_TYPE_JSON,
+        )
+        self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+
     def test_update_inventory_item(self):
         """Update an Inventory item"""
         # Create a dummy inventory item
@@ -216,6 +228,17 @@ class TestInventoryItemServer(unittest.TestCase):
             content_type=CONTENT_TYPE_JSON,
         )
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_update_item_bad_data(self):
+        """Ensure a 400 is returned if we try and update an item with bad data"""
+        test_inventory_item = self._create_inventory_items(1)[0].serialize()
+        test_inventory_item["count"] = "a"
+        resp = self.app.put(
+            "/api{}/{}".format(BASE_URL, test_inventory_item["id"]),
+            json=test_inventory_item,
+            content_type=CONTENT_TYPE_JSON,
+        )
+        self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_update_in_stock(self):
         """Update in stock status for an inventory item"""
