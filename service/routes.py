@@ -225,43 +225,47 @@ class InventoryItemResource(Resource):
 @api.route("/inventories", strict_slashes=False)
 class InventoryItemCollection(Resource):
     """Handles all interactions with collections of InventoryItem"""
+
     ######################################################################
     # LIST ALL Inventory Items
     ######################################################################
-    @app.route("/inventories", methods=["GET"])
-    @api.doc('list_inventory_items')
+    @api.doc("list_inventory_items")
     @api.expect(inventory_item_args, validate=True)
     @api.marshal_list_with(inventory_item_model)
     def get(self):
         """Returns all of the InventoryItem objects"""
-        app.logger.info("Request for inventory list %s", request.args)
+        app.logger.info(
+            "Request for inventory list %s", inventory_item_args.parse_args()
+        )
         inventory_items = []
         args = inventory_item_args.parse_args()
 
         # If a user provides a SKU query parameter, filter by that
-        if args['sku']:
-            app.logger.info('Filtering by category: %s', args['sku'])
-            inventory_items = InventoryItem.find_by_sku(args['sku'])
-        
+        if args["sku"]:
+            app.logger.info("Filtering by category: %s", args["sku"])
+            inventory_items = InventoryItem.find_by_sku(args["sku"])
+
         # If a user provides a condition parameter, filter by that
-        elif args['condition']:
-            app.logger.info('Filtering by condition: %s', args['condition'])
-            inventory_items = InventoryItem.find_by_condition(getattr(Condition, args['condition']))
+        elif args["condition"]:
+            app.logger.info("Filtering by condition: %s", args["condition"])
+            inventory_items = InventoryItem.find_by_condition(
+                getattr(Condition, args["condition"])
+            )
 
         # If a user provies an in-stock paramter, filter by that
-        elif args['in_stock']:
-            app.logger.info('Filtering by in stock: %s', args['in_stock'])
-            inventory_items = InventoryItem.find_by_in_stock(args['in_stock'])
+        # This is a boolean value, so we need to explictly evaluate it it's not
+        # None
+        elif args["in_stock"] is not None:
+            app.logger.info("Filtering by in stock: %s", args["in_stock"])
+            inventory_items = InventoryItem.find_by_in_stock(args["in_stock"])
 
         else:
-            app.logger.info('Returning unfiltered list.')
+            app.logger.info("Returning unfiltered list.")
             inventory_items = InventoryItem.all()
 
         results = [item.serialize() for item in inventory_items]
         app.logger.info("Returning %d inventory items", len(results))
         return results, status.HTTP_200_OK
-
-
 
     # ---------------------------------------------------------------------
     # ADD A NEW INVENTORY ITEM

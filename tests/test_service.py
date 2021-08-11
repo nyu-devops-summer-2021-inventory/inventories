@@ -284,7 +284,8 @@ class TestInventoryItemServer(unittest.TestCase):
         test_sku = inventory_items[0].sku
         sku_items = [item for item in inventory_items if item.sku == test_sku]
         resp = self.app.get(
-            "/api{0}".format(BASE_URL), query_string="sku={}".format(quote_plus(test_sku))
+            "/api{0}".format(BASE_URL),
+            query_string="sku={}".format(quote_plus(test_sku)),
         )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
@@ -318,7 +319,9 @@ class TestInventoryItemServer(unittest.TestCase):
         in_stock_items = [
             item for item in inventory_items if item.in_stock == test_in_stock
         ]
-        resp = self.app.get("/api{0}".format(BASE_URL), query_string="in_stock={}".format(test_in_stock))
+        resp = self.app.get(
+            "/api{0}".format(BASE_URL), query_string="in_stock={}".format(test_in_stock)
+        )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
         self.assertEqual(len(data), len(in_stock_items))
